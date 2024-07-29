@@ -38,8 +38,8 @@ process_dir() {
 
       out_file="${parent_dir}/${month}-${day}.html"
       echo "out_file=$out_file"
-      sed -E 's|http://www\.bibletrack\.org/cgi-bin/bible\.pl\?incr=0&mo=([0-9]+)&dy=([0-9]+)|\1-\2.html|g' "$file" |
-      sed -E 's|<img src="\.\./\.\./bible_track_logo.png\"|<img id="logo" src="/bible_track_logo.png"|g' > "$out_file"
+      sed -E 's|http://www\.bibletrack\.org/cgi-bin/bible\.pl\?incr=0&mo=([0-9]+)&dy=([0-9]+)|\1-\2.html|g' "$file" > "$out_file"
+#      sed -E 's|<img src="\.\./\.\./bible_track_logo.png\"|<img id="logo" src="/bible_track_logo.png"|g' > "$out_file"
     fi
   done
 }

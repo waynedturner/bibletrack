@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 # Array of month names
 months=("January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December")
 
@@ -10,43 +11,94 @@ month_to_name() {
     echo "${months[$((month_num - 1))]}"
 }
 
-body_file=$(mktemp)
-output_file=$(mktemp)
+function extract_lines {
+    local file=$1
+    local start_pattern=$2
+    local end_pattern=$3
+    local out_file=$4
 
-summary_file="$1"
-xmllint --html --xpath "//body/*" "$summary_file" | sed 's/&lt;/</g; s/&gt;/>/g; s/&amp;/&/g' > "$body_file"
+    local start_line=1
+
+    if [ -z "$start_pattern" ]; then
+      start_line=1
+    else
+      # Find the line numbers
+      start_line=$(grep -n "$start_pattern" "$file" | cut -d: -f1)
+      start_line=$((start_line+1))
+    fi
+
+    local end_line
+    end_line=$(grep -n "$end_pattern" "$file" | cut -d: -f1)
+    end_line=$((end_line-1))
+
+    if [ -z "$out_file" ]; then
+      sed -n "${start_line},${end_line}p" "$file"
+    else
+      sed -n "${start_line},${end_line}p" "$file" > "$out_file"
+    fi
+
+}
+
+next_uri() {
+  # Start date
+  local month=$1
+  local day=$2
+  # Convert to seconds since epoch
+  start_seconds=$(date -j -f "%m-%d" "${month}-${day}" "+%s")
+
+  # Increment by one day (86400 seconds)
+  next_seconds=$((start_seconds + 86400))
+
+  # Convert back to date format
+  date -j -f "%s" "$next_seconds" "+%-m-%-d.html"
+}
+
+prev_uri() {
+  # Start date
+  local month=$1
+  local day=$2
+  # Convert to seconds since epoch
+  start_seconds=$(date -j -f "%m-%d" "${month}-${day}" "+%s")
+
+  # decrement by one day (86400 seconds)
+  prev_seconds=$((start_seconds - 86400))
+
+  # Convert back to date format
+  date -j -f "%s" "$prev_seconds" "+%-m-%-d.html"
+}
+
+generated_summary() {
+  local summary_file=$1
+  local out_file=$2
+
+  local body_file="/tmp/body_${out_file}.tmp"
+  local summary_tmp="/tmp/summary.tmp"
+
+  extract_lines "$summary_file" "<body*" "</body>" > "$body_file"
+
+  pattern='([0-9]+)-([0-9]+)\.html'
+  if [[ $summary_file =~ $pattern ]]; then
+    month="${BASH_REMATCH[1]}"
+    day="${BASH_REMATCH[2]}"
+
+  fi
+
+  next_url=$(next_uri "$month" "$day")
+  prev_url=$(prev_uri "$month" "$day")
+
+  if [ ! -e "$summary_tmp" ]; then
+    extract_lines "summary_template.html" "" "{{body}}" > "$summary_tmp"
+  fi
+
+  sed "s/{{month}}/$(month_to_name "$month")/g" "$summary_tmp" |
+  sed "s/{{day}}/$day/g" |
+  sed "s/{{next_url}}/$next_url/g" |
+  sed "s/{{prev_url}}/$prev_url/g" > "$out_file"
 
 
-pattern='([0-9]+)-([0-9]+)\.html'
-if [[ $summary_file =~ $pattern ]]; then
-  month="${BASH_REMATCH[1]}"
-  day="${BASH_REMATCH[2]}"
-  echo "matched month=${month} day=${day}"
-fi
+  cat "$body_file" >> "$out_file"
+  echo "</body></html>" >> "$out_file"
 
-cat <<EOF > "$output_file"
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BibleTrack Summary: $(month_to_name "$month") ${day}</title>
-    <link rel="stylesheet" href="/summary.css">
-    <script type="text/javascript" src="/summary_nav.js"></script>
-</head>
-<body onload="setupNav()">
+}
 
-    <div id="navPane" class="nav-pane">
-        <a href="javascript:prev()">Previous</a>
-        <a href="javascript:next()">Next</a>
-    </div>
-
-EOF
-
-cat "$body_file" >> "$output_file"
-
-cat <<EOF >> "$output_file"
-</body>
-</html>
-EOF
-
-mv "$output_file" "generated.html"
+generated_summary "$1" out.html

@@ -67,11 +67,11 @@ prev_uri() {
   date -j -f "%s" "$prev_seconds" "+%-m-%-d.html"
 }
 
-generated_summary() {
+generate_summary() {
   local summary_file=$1
   local out_file=$2
 
-  local body_file="/tmp/body_${out_file}.tmp"
+  local body_file="${out_file}.tmp"
   local summary_tmp="/tmp/summary.tmp"
 
   extract_lines "$summary_file" "<body*" "</body>" > "$body_file"
@@ -97,8 +97,18 @@ generated_summary() {
 
 
   cat "$body_file" >> "$out_file"
+  rm -rf "$body_file"
+
   echo "</body></html>" >> "$out_file"
 
 }
 
-generated_summary "$1" out.html
+for changed_file in $(git diff --name-only HEAD~1 HEAD | grep ^summary/); do
+  dir=$(dirname "$changed_file")
+  name=$(basename "$changed_file")
+  output_dir="./upload/$dir"
+  mkdir -p "$output_dir"
+  echo "generate summary $changed_file"
+  generate_summary "$changed_file" "$output_dir/$name"
+done
+

@@ -23,12 +23,12 @@ function extract_lines {
       start_line=1
     else
       # Find the line numbers
-      start_line=$(grep -n "$start_pattern" "$file" | cut -d: -f1)
+      start_line=$(grep -n -i "$start_pattern" "$file" | cut -d: -f1)
       start_line=$((start_line+1))
     fi
 
     local end_line
-    end_line=$(grep -n "$end_pattern" "$file" | cut -d: -f1)
+    end_line=$(grep -n -i "$end_pattern" "$file" | cut -d: -f1)
     end_line=$((end_line-1))
 
     if [ -z "$out_file" ]; then
@@ -103,7 +103,17 @@ generate_summary() {
 
 }
 
-for changed_file in $(git diff --name-only HEAD~1 HEAD | grep ^summary/); do
+all="$1"
+
+rm -rf upload
+
+if [ -z "$all" ]; then
+  changed_files=$(git diff --name-only HEAD~1 HEAD | grep ^summary/)
+else
+  changed_files=$(find ./summary -iname "*.html")
+fi
+
+for changed_file in $changed_files; do
   dir=$(dirname "$changed_file")
   name=$(basename "$changed_file")
   output_dir="./upload/$dir"
@@ -111,4 +121,5 @@ for changed_file in $(git diff --name-only HEAD~1 HEAD | grep ^summary/); do
   echo "generate summary $changed_file"
   generate_summary "$changed_file" "$output_dir/$name"
 done
+
 

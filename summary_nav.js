@@ -1,31 +1,17 @@
-function next() {
+function next(path) {
     var d = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     var loc = d.getMonth() + "-" + d.getDate() + ".html";
-    window.location.href = loc;
+    window.location.href = path + "/" + loc;
 }
 
-function prev() {
+function prev(path) {
     var d = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
     var loc = d.getMonth() + "-" + d.getDate() + ".html";
-    window.location.href = loc;
+    window.location.href = path + "/" + loc;
 }
 
-function today() {
+function today(path) {
     var d = new Date();
     var loc = d.getMonth() + "-" + d.getDate() + ".html";
-    window.location.href = loc;
-}
-
-function setupNav(){
-    var logo = document.getElementById('logo');
-    logo.onclick = toggleNav;
-}
-
-function toggleNav(){
-    let navPane = document.getElementById('navPane');
-    if (navPane.style.left === '0px') {
-        navPane.style.left = '-200px';
-    } else {
-        navPane.style.left = '0px';
-    }
+    window.location.href = path + "/" + loc;
 }

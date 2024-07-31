@@ -108,7 +108,7 @@ all="$1"
 rm -rf upload
 
 if [ -z "$all" ]; then
-  changed_files=$(git diff --name-only HEAD~1 HEAD | grep ^summary/)
+  changed_files=$(git diff --name-only HEAD~1 HEAD | grep ^summary2/)
 else
   changed_files=$(find ./summary2 -iname "*.html")
 fi

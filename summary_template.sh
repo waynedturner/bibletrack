@@ -72,7 +72,7 @@ generate_summary() {
   local out_file=$2
 
   local body_file="${out_file}.tmp"
-  local summary_tmp="/tmp/summary.tmp"
+  local summary_tmp="$SUMMARY_TMP_FILE"
 
   extract_lines "$summary_file" "<body*" "</body>" > "$body_file"
 
@@ -83,8 +83,14 @@ generate_summary() {
 
   fi
 
-  next_url=$(next_uri "$month" "$day")
-  prev_url=$(prev_uri "$month" "$day")
+  local ts
+  if [ -z "$SUMMARY_TIMESTAMP" ]; then
+    ts=$(date +%s)
+  else
+    ts="$SUMMARY_TIMESTAMP"
+  fi
+  next_url="$(next_uri "$month" "$day")?v=${ts}"
+  prev_url="$(prev_uri "$month" "$day")?v=${ts}"
 
   if [ ! -e "$summary_tmp" ]; then
     extract_lines "summary_template.html" "" "{{body}}" > "$summary_tmp"
@@ -93,8 +99,8 @@ generate_summary() {
   sed "s/{{month}}/$(month_to_name "$month")/g" "$summary_tmp" |
   sed "s/{{day}}/$day/g" |
   sed "s/{{next_url}}/$next_url/g" |
-  sed "s/{{prev_url}}/$prev_url/g" > "$out_file"
-
+  sed "s/{{prev_url}}/$prev_url/g" |
+  sed "s/{{timestamp}}/$ts/g" > "$out_file"
 
   cat "$body_file" >> "$out_file"
   rm -rf "$body_file"
@@ -112,6 +118,13 @@ if [ -z "$all" ]; then
 else
   changed_files=$(find ./summary2 -iname "*.html")
 fi
+
+
+SUMMARY_TIMESTAMP=$(date +%s)
+SUMMARY_TMP_FILE=/tmp/summary.tmp
+
+#clear summary tmp cache
+rm -rf "$SUMMARY_TMP_FILE"
 
 for changed_file in $changed_files; do
   dir=$(dirname "$changed_file")

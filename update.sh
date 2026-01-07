@@ -46,6 +46,6 @@ process_dir() {
   done
 }
 
-process_dir summary_old/kjv
-process_dir summary_old/nkjv
+process_dir summary2/kjv
+process_dir summary2/nkjv
 

@@ -97,6 +97,7 @@ generate_summary() {
   fi
 
   sed "s/{{month}}/$(month_to_name "$month")/g" "$summary_tmp" |
+  sed "s/{{month_num}}/$month/g" |
   sed "s/{{day}}/$day/g" |
   sed "s/{{next_url}}/$next_url/g" |
   sed "s/{{prev_url}}/$prev_url/g" |
@@ -134,5 +135,4 @@ for changed_file in $changed_files; do
   echo "generate summary $changed_file"
   generate_summary "$changed_file" "$output_dir/$name"
 done
-
 

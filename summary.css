@@ -14,9 +14,22 @@ h1,h2 {
 
 .top-nav-pane {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     justify-content: flex-end;
+    gap: 0;
 }
 
 .top-nav-pane a {
-    margin: 5px;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.reading-date {
+    margin-right: 0;
+}
+
+.reading-sep {
+    margin: 0 4px;
+    white-space: nowrap;
 }

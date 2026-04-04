@@ -9,43 +9,196 @@
 		<style type="text/css" media="all"><!--
 .ds1 /*agl rulekind: base;*/ { color: #000; }
 --></style>
+	
+		
+
+	
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 24px;
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				color: #1f2933;
+				background:
+					radial-gradient(circle at top right, rgba(239, 230, 211, 0.8), transparent 26%),
+					linear-gradient(180deg, #ffffff 0%, #fffdf8 48%, #ffffff 100%);
+				line-height: 1.6;
+			}
+			a {
+				color: #183153;
+			}
+			.page-shell {
+				max-width: 1040px;
+				margin: 0 auto;
+				padding: 26px 30px 42px;
+				border: 1px solid #d8ccb6;
+				border-radius: 18px;
+				box-shadow: 0 18px 45px rgba(15, 35, 64, 0.10);
+				background: rgba(255, 255, 255, 0.96);
+			}
+			.header-bar {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 18px;
+				flex-wrap: wrap;
+				margin-bottom: 16px;
+				padding-bottom: 18px;
+				border-bottom: 1px solid #d8ccb6;
+			}
+			.header-logo img {
+				display: block;
+				width: 260px;
+				max-width: 100%;
+				height: auto;
+			}
+			.header-controls {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				gap: 12px;
+			}
+			.header-links,
+			.version-toggle,
+			.header-tools {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				justify-content: flex-end;
+			}
+			.header-button,
+			.toggle-button {
+				display: inline-block;
+				padding: 10px 14px;
+				border: 1px solid #d8ccb6;
+				border-radius: 999px;
+				background: #ffffff;
+				color: #0f2340;
+				font-size: 14px;
+				font-weight: bold;
+				text-decoration: none;
+			}
+			.toggle-button.active {
+				background: #183153;
+				border-color: #183153;
+				color: #ffffff;
+			}
+			.article-card {
+				margin: 18px 0 20px;
+				padding: 18px 20px;
+				border: 1px solid #d8ccb6;
+				border-radius: 16px;
+				background: linear-gradient(180deg, #fbf8f0 0%, #ffffff 100%);
+			}
+			.article-card h3 {
+				margin: 0 0 8px;
+				color: #0f2340;
+				font-size: 18px;
+			}
+			.article-card p {
+				margin: 0;
+			}
+			.note-box {
+				float: right;
+				width: 300px;
+				margin: 6px 0 16px 18px;
+				border: 1px solid #d8ccb6;
+				border-radius: 14px;
+				background: #f7f3ea;
+			}
+			.note-box td {
+				padding: 12px 14px;
+				color: #5d6b79;
+			}
+			.page-footer {
+				margin-top: 28px;
+				padding-top: 18px;
+				border-top: 1px solid #d8ccb6;
+				color: #5d6b79;
+				font-size: 12px;
+				text-align: center;
+			}
+			.date-picker {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 8px;
+			}
+			.date-picker label {
+				font-size: 14px;
+				font-weight: bold;
+				color: #5d6b79;
+			}
+			.date-picker input {
+				padding: 9px 12px;
+				border: 1px solid #d8ccb6;
+				border-radius: 999px;
+				font-family: inherit;
+				font-size: 14px;
+			}
+			.date-picker button {
+				padding: 10px 14px;
+				border: 1px solid #183153;
+				border-radius: 999px;
+				background: #183153;
+				color: #ffffff;
+				font-family: inherit;
+				font-size: 14px;
+				font-weight: bold;
+				cursor: pointer;
+			}
+			@media (max-width: 720px) {
+				body {
+					padding: 14px;
+				}
+				.page-shell {
+					padding: 18px;
+				}
+				.header-controls {
+					align-items: flex-start;
+				}
+				.header-links,
+				.version-toggle,
+				.header-tools {
+					justify-content: flex-start;
+				}
+				.note-box {
+					float: none;
+					width: 100%;
+					margin-left: 0;
+				}
+			}
+		</style>
+
 	</head>
 
-	<body bgcolor="#cce1ff">
-	<table width="200" border="1" align="right" cellpadding="2" cellspacing="0" bgcolor="#ffea89">
-      <tr>
-        <td height="20" colspan="2"><div align="center"><font size="2" face="Arial, Helvetica, sans-serif"><a href="http://www.bibletrack.org/" target="_self">BibleTrack Home &amp; Index</a></font></div></td>
-      </tr>
-      <tr>
-        <td width="93" height="20"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-10.html" target="_self">&lt;&lt; Matt 27</a></font></td>
-        <td width="93"><div align="right">
-            <p><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-18.html" target="_self">Matt 27 &gt;&gt;</a><a href="1-5.html" target="_self"><br />
-            </a></font></p>
-        </div></td>
-      </tr>
-      <tr>
-        <td height="20"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-10.html" target="_self">&lt;&lt; Mark 14</a></font></td>
-        <td><div align="right"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-18.html" target="_self">Mark 15 &gt;&gt;</a></font></div></td>
-      </tr>
-      <tr>
-        <td height="20"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-10.html" target="_self">&lt;&lt; Luke 22</a></font></td>
-        <td><div align="right"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-18.html" target="_self">Luke 23 &gt;&gt;</a></font></div></td>
-      </tr>
-      <tr>
-        <td height="20"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-10.html" target="_self">&lt;&lt; John 18</a></font></td>
-        <td><div align="right"><font size="2" face="Arial, Helvetica, sans-serif"><a href="6-18.html" target="_self">John 19 &gt;&gt;</a></font></div></td>
-      </tr>
-    </table>
-	<p> <a href="../nkjv/6-14.html"" target="_self"><strong><font size="4" face="Arial, Helvetica, sans-serif">For New King James text and comment, click here. </font></strong></a> </p>
-	<p><b><font size="5">Matthew 27:2-30; Mark 15:1-19; <strong><font size="5"><a href="http://audio.bibletrack.org/BibleTrack_06-14.mp3" title="Podcast" target="_blank">Listen </a><a href="http://audio.bibletrack.org/BibleTrack_06-14.mp3" target="_blank"><img src="http://www.bibletrack.org/notes/image/audio.jpg" alt="Podcast" width="40" height="39" border="0"></a></font></strong><br>
+				<body>
+		<div class="page-shell">
+		<div class="header-bar">
+			<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>
+			<div class="header-controls">
+				<div class="version-toggle">
+					<span class="toggle-button active">KJV</span>
+					<a class="toggle-button" href="../nkjv/6-14.html" target="_self">NKJV</a>
+				</div>
+				<div class="header-tools">
+					<div class="date-picker">
+						<label for="reading-date">Select date</label>
+						<input id="reading-date" type="date" value="2026-06-14" />
+						<button type="button" onclick="openSelectedDate('kjv')">Go</button>
+					</div>
+				</div>
+			</div>
+		</div>		<div class="reading-nav">
+			<a class="reading-nav-home" href="http://www.bibletrack.org/" target="_self">BibleTrack Home &amp; Index</a>
+			<div class="reading-nav-links">
+				<a href="6-10.html" target="_self">&lt;&lt; Matt 27</a>
+				<a href="6-18.html" target="_self">Matt 27 &gt;&gt;</a>
+			</div>
+		</div>
+<p><b><font size="5">Matthew 27:2-30; Mark 15:1-19; <strong><font size="5"><a href="http://audio.bibletrack.org/BibleTrack_06-14.mp3" title="Podcast" target="_blank">Listen </a><a href="http://audio.bibletrack.org/BibleTrack_06-14.mp3" target="_blank"><img src="../../listen_icon.svg" alt="Listen" width="40" height="40" border="0" /></a></font></strong><br>
     Luke 23:1-25; John 18:28-19:3</font></b> </p>
-	<table width="244" border="0" align="right" cellpadding="0">
-      <tr>
-        <td>
-        <iframe width="240" height="180" src="http://www.youtube.com/embed/qKy91Cbvioo" frameborder="0" allowfullscreen></iframe>
-        &nbsp;</td>
-      </tr>
-    </table>
+	
 	<p><strong>In this passage, we see the following in Jesus' ministry:</strong></p>
 	<ul>
       <li>Jesus continues to be subjected to a series of illegal trials.</li>
@@ -54,16 +207,12 @@
 	<p>&nbsp;</p>
 	<p>&nbsp;</p>
 	<h2></h2>
-<IFRAME
-SRC="http://www.bibletrack.org/notes/resource/misc/Trials_of_Jesus.html"
-WIDTH=100% HEIGHT=70%
-FRAMEBORDER=2
-ALIGN=left>
-<TABLE ALIGN=RIGHT BORDER=1 CELLPADDING=0>
-<TR><TD>See the
-<A HREF="http://www.bibletrack.org/notes/resource/misc/Trials_of_Jesus.html">Article</A></TD></TR>
-</TABLE>
-</IFRAME>
+
+		<div class="article-card">
+			<h3>Related Article</h3>
+			<p><a href="http://www.bibletrack.org/notes/resource/misc/Trials_of_Jesus.html" target="_blank">Open the related article on Trials of Jesus.</a></p>
+		</div>
+
 	<p><font color="#cce1ff">.</font></p>
 		<p>&nbsp;</p>
 		<p><a name="Trial"></a><font size="4"><b>Trial #4 - Taking Jesus to Pilate (Matthew 27:2; Mark 15:1; Luke 23:1; John 18:28)</b></font></p>
@@ -94,17 +243,12 @@ ALIGN=left>
 		<table width="255" border="0" align="right" cellpadding="0" cellspacing="0">
           <tr>
             <td><font size="4"><b>
-              <IFRAME
-SRC="http://www.bibletrack.org/notes/resource/easton/Pontius_Pilate.html"
-WIDTH=250 HEIGHT=250
-FRAMEBORDER=2
-ALIGN=RIGHT>
-              <TABLE ALIGN=RIGHT BORDER=1 CELLPADDING=0>
-                <TR>
-                  <TD>See the <A HREF="http://www.bibletrack.org/notes/resource/easton/Pontius_Pilate.html">Article</A></TD>
-                </TR>
-              </TABLE>
-              </IFRAME>
+              
+		<div class="article-card">
+			<h3>Related Article</h3>
+			<p><a href="http://www.bibletrack.org/notes/resource/easton/Pontius_Pilate.html" target="_blank">Open the related article on Pontius Pilate.</a></p>
+		</div>
+
             </b></font></td>
           </tr>
         </table>
@@ -168,21 +312,12 @@ ALIGN=RIGHT>
 	<p>The charge vocalized by the Jewish leadership to Pilate is found in verse 2, &quot;And they began to accuse him, saying, We found this fellow perverting the nation, and forbidding to give tribute to Caesar, saying that he himself is Christ a King.&quot; While the first two points of the accusation were not true, obviously <b>the three-point charge is designed to make Jesus a Roman security threat so that Pilate cannot simply dismiss Jesus.</b></p>
 		<p>John records more of the actual conversation between Jesus and Pilate than do the other three writers. John notes that Jesus establishes that he has not come to set himself up as a king over a physical kingdom with an army (that comes later in <a title="Revelation 19 Summary" href="12-27.html#Armageddon" target="_blank">Revelation 19:11-21, see notes</a>); Jesus reasons that, were those his intentions, he would have defended himself from being taken in the garden with his own army. Pilate is convinced that Jesus is not guilty of a conspiracy to overthrow the Roman government as the Jewish leaders claim. Therefore, <b>Pilate finds Jesus innocent of wrong doing, but prophecy is prophecy; Jesus must die on the cross.</b></p>
 		<p>Another motivation for these wicked Jewish leaders here is plausible deniability in the eyes of the common Jewish folks who had embraced the ministry of Jesus. You will recall that the point of the Judas betrayal was to capture Jesus in private - not while he was teaching during the day among the people. That was Judas' deal with the Jewish leaders - a private capture. All the Jewish trials were done during the night while the Jewish people slept. Obviously, the reasoning of the Jewish leaders involved the people waking up on passover day and seeing Jesus being crucified by Romans...not Jews. One can safely recognize that those bad ol' Romans were to be the culprits here; most people would never realize that their Jewish leaders had orchestrated the whole ordeal.</p>
-<table width="255" border="0" align="right" cellpadding="0" cellspacing="0">
-          <tr>
-            <td><IFRAME
-SRC="http://www.bibletrack.org/notes/resource/easton/Herod_Antipas.html"
-WIDTH=250 HEIGHT=250
-FRAMEBORDER=2
-ALIGN=RIGHT>
-              <TABLE ALIGN=RIGHT BORDER=1 CELLPADDING=0>
-                <TR>
-                  <TD>See the <A HREF="http://www.bibletrack.org/notes/resource/easton/Herod_Antipas.html">Article</A></TD>
-                </TR>
-              </TABLE>
-            </IFRAME></td>
-          </tr>
-        </table>
+
+		<div class="article-card">
+			<h3>Related Article</h3>
+			<p><a href="http://www.bibletrack.org/notes/resource/easton/Herod_Antipas.html" target="_blank">Open the related article on Herod Antipas.</a></p>
+		</div>
+
     <p><a name="Herod"></a><font size="4"><b>Trial #5 - Jesus appears before Herod (Luke 23:6-16)<br>
 				</b></font></p>
 <blockquote>
@@ -272,7 +407,23 @@ ALIGN=RIGHT>
   </tr>
 </table>
 <p><span class="ds1">Matthew, Mark and John record that the Roman soldiers mocked, spit and smote Jesus after replacing his robe (the one Herod had given him) with a purple/scarlet one and placing the homemade crown of thorns on his head. <b>What kind of an adult male finds this entertaining?</b> These Roman soldiers had no stake in this controversy whatsoever. So...why did they do what they did? Prophecy...<a title="Isaiah 53 Summary" href="10-7.html#Isaiah" target="_blank">Isaiah 53 (see notes)</a> - the account of the suffering of the Messiah had been written down centuries before.</span></p>
-</body>
+
+		<p class="page-footer">Copyright 2003-2026 BibleTrack</p>
+		</div>
+		<script type="text/javascript">
+			function openSelectedDate(version) {
+				var input = document.getElementById('reading-date');
+				if (!input || !input.value) {
+					return;
+				}
+				var parts = input.value.split('-');
+				if (parts.length !== 3) {
+					return;
+				}
+				window.location.href = parts[1].replace(/^0/, '') + '-' + parts[2].replace(/^0/, '') + '.html';
+			}
+		</script>
+	</body>
+
 
 </html>
-

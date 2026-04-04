@@ -36,35 +36,6 @@ STYLE_BLOCK = """
 \t\t\t\tpadding-bottom: 18px;
 \t\t\t\tborder-bottom: 1px solid #d8ccb6;
 \t\t\t}
-\t\t\t.reading-nav {
-\t\t\t\tmargin-bottom: 22px;
-\t\t\t\tborder: 3px solid #8a8a8a;
-\t\t\t\tbackground: #ffe98d;
-\t\t\t\tbox-shadow: 4px 4px 0 rgba(65, 84, 122, 0.35);
-\t\t\t}
-\t\t\t.reading-nav a {
-\t\t\t\tdisplay: block;
-\t\t\t\tcolor: #4726d5;
-\t\t\t\ttext-decoration: underline;
-\t\t\t}
-\t\t\t.reading-nav-home {
-\t\t\t\tpadding: 12px 18px;
-\t\t\t\tborder-bottom: 3px solid #8a8a8a;
-\t\t\t\tfont-size: 32px;
-\t\t\t\ttext-align: center;
-\t\t\t}
-\t\t\t.reading-nav-links {
-\t\t\t\tdisplay: grid;
-\t\t\t\tgrid-template-columns: 1fr 1fr;
-\t\t\t}
-\t\t\t.reading-nav-links a {
-\t\t\t\tpadding: 10px 14px;
-\t\t\t\tfont-size: 28px;
-\t\t\t}
-\t\t\t.reading-nav-links a + a {
-\t\t\t\tborder-left: 3px solid #8a8a8a;
-\t\t\t\ttext-align: right;
-\t\t\t}
 \t\t\t.header-logo img {
 \t\t\t\tdisplay: block;
 \t\t\t\twidth: 260px;
@@ -173,20 +144,6 @@ STYLE_BLOCK = """
 \t\t\t\t.page-shell {
 \t\t\t\t\tpadding: 18px;
 \t\t\t\t}
-\t\t\t\t.reading-nav-home {
-\t\t\t\t\tfont-size: 24px;
-\t\t\t\t}
-\t\t\t\t.reading-nav-links {
-\t\t\t\t\tgrid-template-columns: 1fr;
-\t\t\t\t}
-\t\t\t\t.reading-nav-links a {
-\t\t\t\t\tfont-size: 20px;
-\t\t\t\t}
-\t\t\t\t.reading-nav-links a + a {
-\t\t\t\t\tborder-left: 0;
-\t\t\t\t\tborder-top: 3px solid #8a8a8a;
-\t\t\t\t\ttext-align: left;
-\t\t\t\t}
 \t\t\t\t.header-controls {
 \t\t\t\t\talign-items: flex-start;
 \t\t\t\t}
@@ -227,76 +184,6 @@ FOOTER_AND_SCRIPT = """
 
 BODY_END_RE = re.compile(r"</body>\s*</html>\s*$", re.I | re.S)
 
-BOOK_ABBREVIATIONS = {
-    "Genesis": "Gen",
-    "Exodus": "Exod",
-    "Leviticus": "Lev",
-    "Numbers": "Num",
-    "Deuteronomy": "Deut",
-    "Joshua": "Josh",
-    "Judges": "Judg",
-    "Ruth": "Ruth",
-    "I Samuel": "1 Sam",
-    "II Samuel": "2 Sam",
-    "I Kings": "1 Kgs",
-    "II Kings": "2 Kgs",
-    "I Chronicles": "1 Chr",
-    "II Chronicles": "2 Chr",
-    "Ezra": "Ezra",
-    "Nehemiah": "Neh",
-    "Esther": "Esth",
-    "Job": "Job",
-    "Psalms": "Ps",
-    "Proverbs": "Prov",
-    "Ecclesiastes": "Eccl",
-    "Song of Solomon": "Song",
-    "Isaiah": "Isa",
-    "Jeremiah": "Jer",
-    "Lamentations": "Lam",
-    "Ezekiel": "Ezek",
-    "Daniel": "Dan",
-    "Hosea": "Hos",
-    "Joel": "Joel",
-    "Amos": "Amos",
-    "Obadiah": "Obad",
-    "Jonah": "Jonah",
-    "Micah": "Mic",
-    "Nahum": "Nah",
-    "Habakkuk": "Hab",
-    "Zephaniah": "Zeph",
-    "Haggai": "Hag",
-    "Zechariah": "Zech",
-    "Malachi": "Mal",
-    "Matthew": "Matt",
-    "Mark": "Mark",
-    "Luke": "Luke",
-    "John": "John",
-    "Acts": "Acts",
-    "Romans": "Rom",
-    "I Corinthians": "1 Cor",
-    "II Corinthians": "2 Cor",
-    "Galatians": "Gal",
-    "Ephesians": "Eph",
-    "Philippians": "Phil",
-    "Colossians": "Col",
-    "I Thessalonians": "1 Thess",
-    "II Thessalonians": "2 Thess",
-    "I Timothy": "1 Tim",
-    "II Timothy": "2 Tim",
-    "Titus": "Titus",
-    "Philemon": "Phlm",
-    "Hebrews": "Heb",
-    "James": "Jas",
-    "I Peter": "1 Pet",
-    "II Peter": "2 Pet",
-    "I John": "1 John",
-    "II John": "2 John",
-    "III John": "3 John",
-    "Jude": "Jude",
-    "Revelation": "Rev",
-}
-
-
 def clean_text(text: str) -> str:
     text = re.sub(r"<[^>]+>", " ", text)
     text = text.replace("&nbsp;", " ")
@@ -311,39 +198,6 @@ def html_escape(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
-
-
-def extract_primary_title(path: Path) -> str:
-    try:
-        text = path.read_text(encoding="latin-1")
-    except FileNotFoundError:
-        return ""
-    match = re.search(r'<p[^>]*>\s*(?:<a[^>]*></a>)?\s*<font size="5"><b>(.*?)</b></font>', text, re.I | re.S)
-    if not match:
-        return ""
-    return clean_text(match.group(1))
-
-
-def compact_reference_label(title: str) -> str:
-    if not title:
-        return ""
-    parts = [part.strip() for part in title.split(";") if part.strip()]
-    compacted = []
-    for part in parts[:3]:
-        for full, short in sorted(BOOK_ABBREVIATIONS.items(), key=lambda item: len(item[0]), reverse=True):
-            if part.startswith(full):
-                part = short + part[len(full):]
-                break
-        compacted.append(part)
-    return "; ".join(compacted)
-
-
-def nav_label_for_href(version: str, href: str) -> str:
-    if not href:
-        return ""
-    slug = Path(href.split("?")[0]).name
-    title = extract_primary_title(Path("summary2") / version / slug)
-    return compact_reference_label(title)
 
 
 def humanize_src(src: str) -> str:
@@ -372,8 +226,10 @@ def find_prev_next(text: str):
 
 
 def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_label: str, next_href: str, next_label: str) -> str:
-    prev_label = prev_label or nav_label_for_href(version, prev_href) or "Previous"
-    next_label = next_label or nav_label_for_href(version, next_href) or "Next"
+    prev_label = prev_label or "Previous"
+    next_label = next_label or "Next"
+    prev_link = f'\t\t\t\t\t<a class="header-button" href="{prev_href}" target="_self">{html_escape(prev_label)}</a>\n' if prev_href else ""
+    next_link = f'\t\t\t\t\t<a class="header-button" href="{next_href}" target="_self">{html_escape(next_label)}</a>\n' if next_href else ""
     if version == "kjv":
         toggle = (
             '\t\t\t\t<div class="version-toggle">\n'
@@ -394,6 +250,11 @@ def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_
         '\t\t<div class="header-bar">\n'
         '\t\t\t<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>\n'
         '\t\t\t<div class="header-controls">\n'
+        '\t\t\t\t<div class="header-links">\n'
+        '\t\t\t\t\t<a class="header-button" href="http://www.bibletrack.org/" target="_self">Home &amp; Index</a>\n'
+        f"{prev_link}"
+        f"{next_link}"
+        '\t\t\t\t</div>\n'
         f"{toggle}"
         '\t\t\t\t<div class="header-tools">\n'
         '\t\t\t\t\t<div class="date-picker">\n'
@@ -402,13 +263,6 @@ def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_
         f'\t\t\t\t\t\t<button type="button" onclick="openSelectedDate(\'{version}\')">Go</button>\n'
         '\t\t\t\t\t</div>\n'
         '\t\t\t\t</div>\n'
-        '\t\t\t</div>\n'
-        '\t\t</div>\n'
-        '\t\t<div class="reading-nav">\n'
-        '\t\t\t<a class="reading-nav-home" href="http://www.bibletrack.org/" target="_self">BibleTrack Home &amp; Index</a>\n'
-        '\t\t\t<div class="reading-nav-links">\n'
-        f'\t\t\t\t<a href="{prev_href}" target="_self">&lt;&lt; {html_escape(prev_label)}</a>\n'
-        f'\t\t\t\t<a href="{next_href}" target="_self">{html_escape(next_label)} &gt;&gt;</a>\n'
         '\t\t\t</div>\n'
         '\t\t</div>\n'
     )

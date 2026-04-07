@@ -57,7 +57,6 @@ STYLE = """\t\t<style type="text/css">
 \t\t\t\tflex-wrap: wrap;
 \t\t\t\tjustify-content: flex-end;
 \t\t\t}
-\t\t\t.source-pill,
 \t\t\t.header-button {
 \t\t\t\tdisplay: inline-block;
 \t\t\t\tpadding: 10px 14px;
@@ -68,6 +67,9 @@ STYLE = """\t\t<style type="text/css">
 \t\t\t\tfont-size: 14px;
 \t\t\t\tfont-weight: bold;
 \t\t\t\ttext-decoration: none;
+\t\t\t}
+\t\t\t.header-button {
+\t\t\t\tcursor: pointer;
 \t\t\t}
 \t\t\t.resource-body {
 \t\t\t\tfont-size: 16px;
@@ -171,6 +173,30 @@ def clean_analytics(text: str) -> str:
     return text
 
 
+def strip_generated_shell(text: str) -> str:
+    while '<div class="page-shell">' in text and '<div class="header-bar">' in text:
+        match = re.search(
+            r'<div class="resource-body">\s*(.*)\s*</div>\s*</div>\s*$',
+            text,
+            flags=re.S | re.I,
+        )
+        if not match:
+            break
+        text = match.group(1).strip()
+    return text
+
+
+def normalize_links_and_copyright(text: str) -> str:
+    text = re.sub(r'\s+target="_blank"', "", text, flags=re.I)
+    text = re.sub(
+        r'Copyright\s+\d{4}(?:-\d{4})?',
+        'Copyright 2003-2026',
+        text,
+        flags=re.I,
+    )
+    return text
+
+
 def extract_heading_text(body_html: str) -> Optional[str]:
     match = re.search(
         r'<font size="[3456]">\s*(?:<b>)?(.*?)(?:</b>)?\s*(?:<br\s*/?>)?\s*</font>',
@@ -198,6 +224,8 @@ def modernize_document(path: Path) -> None:
         raise ValueError(f"Could not find body in {path}")
 
     inner = clean_analytics(body_match.group(1)).strip()
+    inner = strip_generated_shell(inner)
+    inner = normalize_links_and_copyright(inner)
     heading = extract_heading_text(inner)
     if title.lower().startswith("blank") and heading:
         title = heading
@@ -216,8 +244,7 @@ def modernize_document(path: Path) -> None:
         '\t\t\t<div class="header-bar">\n'
         '\t\t\t\t<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>\n'
         '\t\t\t\t<div class="header-tools">\n'
-        f'\t\t\t\t\t<span class="source-pill">{html.escape(source_label)}</span>\n'
-        '\t\t\t\t\t<a class="header-button" href="http://www.bibletrack.org/" target="_self">Home &amp; Index</a>\n'
+        '\t\t\t\t\t<a class="header-button" href="javascript:history.back()">Back</a>\n'
         "\t\t\t\t</div>\n"
         "\t\t\t</div>\n"
         '\t\t\t<div class="resource-body">\n'

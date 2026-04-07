@@ -52,7 +52,6 @@
 				flex-wrap: wrap;
 				justify-content: flex-end;
 			}
-			.source-pill,
 			.header-button {
 				display: inline-block;
 				padding: 10px 14px;
@@ -63,6 +62,9 @@
 				font-size: 14px;
 				font-weight: bold;
 				text-decoration: none;
+			}
+			.header-button {
+				cursor: pointer;
 			}
 			.resource-body {
 				font-size: 16px;
@@ -161,17 +163,7 @@
 			<div class="header-bar">
 				<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>
 				<div class="header-tools">
-					<span class="source-pill">BibleTrack Resource</span>
-					<a class="header-button" href="http://www.bibletrack.org/" target="_self">Home &amp; Index</a>
-				</div>
-			</div>
-			<div class="resource-body">
-<div class="page-shell">
-			<div class="header-bar">
-				<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>
-				<div class="header-tools">
-					<span class="source-pill">BibleTrack Resource</span>
-					<a class="header-button" href="http://www.bibletrack.org/" target="_self">Home &amp; Index</a>
+					<a class="header-button" href="javascript:history.back()">Back</a>
 				</div>
 			</div>
 			<div class="resource-body">
@@ -186,8 +178,8 @@
 				<div align="center">
 					<p><font size="4">Guide to Prophetic Scripture</font><br>
 						<font size="1">by Wayne D. Turner<br>
-							From <a title="BibleTrack" href="http://www.bibletrack.org" target="_blank">BibleTrack</a><br>
-							Copyright 2007-2008</font></p>
+							From <a title="BibleTrack" href="http://www.bibletrack.org">BibleTrack</a><br>
+							Copyright 2003-2026</font></p>
 				</div>
 				<div align="left">
 					<p><font size="3">The following table provides links to commentary on various aspects of prophecy by subject. Click on the link to go to its associated commentary.</font></p>
@@ -195,65 +187,63 @@
 			</caption>
 			<tr>
 				<td><font size="3"><b>Rapture</b></font></td>
-				<td><font size="2"><a title="I Thessalonians 4 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=20#Rapture" target="_blank">I Thessalonians 4:13-18</a><br>
-						<a title="I Corinthians 15 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=10#Mystery" target="_blank">I Corinthians 15:51-58</a><br>
+				<td><font size="2"><a title="I Thessalonians 4 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=20#Rapture">I Thessalonians 4:13-18</a><br>
+						<a title="I Corinthians 15 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=10#Mystery">I Corinthians 15:51-58</a><br>
 					</font></td>
 			</tr>
 			<tr>
-				<td><font size="3"><b>Tribulation <a title="Tribulation timeline" href="http://www.bibletrack.com/notes/image/Timeline_Matt_24.gif" target="_blank">(see timeline</a>)</b></font></td>
-				<td><font size="2"><a title="Matthew 24 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=5&dy=17#Antichrist" target="_blank">Matthew 24:1-31; Mark 13:1-37; Luke 21:5-28<br>
-						</a><a title="Matthe" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=5&dy=21#Top" target="_blank">Matthew 24:32-25:46; Mark 13:28-37; Luke 21:29-36</a><br>
-						<a title="Daniel 9 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=12#Weeks" target="_blank">Daniel 9:24-27<br>
-						</a><a title="Revelation 6-7 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=15#Life" target="_blank">Revelation 6-7</a><br>
-						<a title="Revelation 9-12 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=19#Top" target="_blank">Revelation 9-12</a><br>
-						<a title="Revelation 13-16" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=23#Top" target="_blank">Revelation 13-16</a><br>
-						<a title="Revelation 17-19 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=27#Top" target="_blank">Revelation 17-19</a><br>
+				<td><font size="3"><b>Tribulation <a title="Tribulation timeline" href="http://www.bibletrack.com/notes/image/Timeline_Matt_24.gif">(see timeline</a>)</b></font></td>
+				<td><font size="2"><a title="Matthew 24 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=5&dy=17#Antichrist">Matthew 24:1-31; Mark 13:1-37; Luke 21:5-28<br>
+						</a><a title="Matthe" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=5&dy=21#Top">Matthew 24:32-25:46; Mark 13:28-37; Luke 21:29-36</a><br>
+						<a title="Daniel 9 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=12#Weeks">Daniel 9:24-27<br>
+						</a><a title="Revelation 6-7 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=15#Life">Revelation 6-7</a><br>
+						<a title="Revelation 9-12 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=19#Top">Revelation 9-12</a><br>
+						<a title="Revelation 13-16" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=23#Top">Revelation 13-16</a><br>
+						<a title="Revelation 17-19 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=27#Top">Revelation 17-19</a><br>
 					</font></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>Millennium</b></font></td>
 				<td>
-					<p><font size="2"><a title="Isaiah 2:1-5 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=11#Fall" target="_blank">Isaiah 2:1-5<br>
-							</a><a title="Isaiah 11 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=16#Millennium" target="_blank">Isaiah 11:1-16<br>
-							</a><a title="Isaiah 60 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=10#Israel" target="_blank">Isaiah 60<br>
-							</a><a title="Isaiah 65-66 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=11#Remnant" target="_blank">Isaiah 65-66</a><br>
-							<a title="Micah 4 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=17#Restoration" target="_blank">Micah 4<br>
-							</a><a title="Ezekiel 34 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=11&dy=28#Bad" target="_blank">Ezekiel 34:25-31<br>
-							</a><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#Millennium" target="_blank">Revelation 20</a></font></p>
+					<p><font size="2"><a title="Isaiah 2:1-5 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=11#Fall">Isaiah 2:1-5<br>
+							</a><a title="Isaiah 11 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=16#Millennium">Isaiah 11:1-16<br>
+							</a><a title="Isaiah 60 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=10#Israel">Isaiah 60<br>
+							</a><a title="Isaiah 65-66 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=11#Remnant">Isaiah 65-66</a><br>
+							<a title="Micah 4 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=17#Restoration">Micah 4<br>
+							</a><a title="Ezekiel 34 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=11&dy=28#Bad">Ezekiel 34:25-31<br>
+							</a><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#Millennium">Revelation 20</a></font></p>
 				</td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>New Jerusalem, New Heaven and New Earth</b></font></td>
-				<td><a title="Revelation 21 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#New" target="_blank"><font size="2">Revelation 21<br>
-						</font></a><font size="2"><a title="Isaiah 65-66 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=11#Remnant" target="_blank">Isaiah 65-66</a></font></td>
+				<td><a title="Revelation 21 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#New"><font size="2">Revelation 21<br>
+						</font></a><font size="2"><a title="Isaiah 65-66 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=11#Remnant">Isaiah 65-66</a></font></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>The Beast (aka Antichrist) and False Prophet</b></font></td>
-				<td><font size="2"><a title="Revelation 13 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=23#Beasts" target="_blank">Revelation 13<br>
-						</a><a title="II Thessalonians 2 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=24#Tribulation" target="_blank">II Thessalonians 2</a></font></td>
+				<td><font size="2"><a title="Revelation 13 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=23#Beasts">Revelation 13<br>
+						</a><a title="II Thessalonians 2 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=10&dy=24#Tribulation">II Thessalonians 2</a></font></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>Battle of Armageddon</b></font></td>
-				<td><a title="Revelation 19 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=27#Armageddon" target="_blank"><font size="2">Revelation 19:11-21</font></a></td>
+				<td><a title="Revelation 19 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=27#Armageddon"><font size="2">Revelation 19:11-21</font></a></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>White Throne Judgment</b></font></td>
-				<td><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#White" target="_blank"><font size="2">Revelation 20:11-15</font></a></td>
+				<td><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#White"><font size="2">Revelation 20:11-15</font></a></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>Judgment Seat of Christ</b></font></td>
-				<td><font size="2"><a title="II Corinthians 5 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=18#Judgment" target="_blank">II Corinthians 5:10<br>
-						</a><a title="I Corinthians 3 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=8&dy=29#Rewards" target="_blank">I Corinthians 3:11-15</a></font></td>
+				<td><font size="2"><a title="II Corinthians 5 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=9&dy=18#Judgment">II Corinthians 5:10<br>
+						</a><a title="I Corinthians 3 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=8&dy=29#Rewards">I Corinthians 3:11-15</a></font></td>
 			</tr>
 			<tr>
 				<td><font size="3"><b>Satan bound and defeated</b></font></td>
-				<td><font size="2"><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#Millennium" target="_blank">Revelation 20</a><br>
+				<td><font size="2"><a title="Revelation 20 Summary" href="http://www.bibletrack.org/cgi-bin/bible.pl?incr=0&mo=12&dy=31#Millennium">Revelation 20</a><br>
 					</font></td>
 			</tr>
 		</table>
 		<p></p>
-			</div>
-		</div>
 			</div>
 		</div>
 	</body>

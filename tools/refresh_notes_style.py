@@ -13,10 +13,14 @@ TARGET_DIRS = [
 ]
 
 STYLE = """\t\t<style type="text/css">
+\t\t\thtml {
+\t\t\t\t-webkit-text-size-adjust: 100%;
+\t\t\t}
 \t\t\tbody {
 \t\t\t\tmargin: 0;
 \t\t\t\tpadding: 24px;
 \t\t\t\tfont-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+\t\t\t\tfont-size: 17px;
 \t\t\t\tcolor: #1f2933;
 \t\t\t\tbackground: #f5f1e8;
 \t\t\t\tline-height: 1.7;
@@ -148,18 +152,105 @@ STYLE = """\t\t<style type="text/css">
 \t\t\t\tmax-width: 100%;
 \t\t\t\theight: auto;
 \t\t\t}
-\t\t\t@media (max-width: 720px) {
+\t\t\t@media (max-width: 900px), (pointer: coarse) {
 \t\t\t\tbody {
-\t\t\t\t\tpadding: 14px;
+\t\t\t\t\tpadding: 16px;
+\t\t\t\t\tfont-size: 18px;
+\t\t\t\t\tline-height: 1.78;
 \t\t\t\t}
 \t\t\t\t.page-shell {
-\t\t\t\t\tpadding: 18px;
+\t\t\t\t\tpadding: 22px 20px 28px;
+\t\t\t\t}
+\t\t\t\t.header-button {
+\t\t\t\t\tfont-size: 16px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="1"] {
+\t\t\t\t\tfont-size: 15px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="2"] {
+\t\t\t\t\tfont-size: 19px;
+\t\t\t\t\tline-height: 1.82;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="3"] {
+\t\t\t\t\tfont-size: 22px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="4"] {
+\t\t\t\t\tfont-size: 30px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="5"],
+\t\t\t\t.resource-body font[size="6"] {
+\t\t\t\t\tfont-size: 34px;
+\t\t\t\t}
+\t\t\t\t.resource-body td,
+\t\t\t\t.resource-body th {
+\t\t\t\t\tfont-size: 18px;
+\t\t\t\t\tline-height: 1.75;
+\t\t\t\t}
+\t\t\t\t.resource-body table {
+\t\t\t\t\tdisplay: block;
+\t\t\t\t\toverflow-x: auto;
+\t\t\t\t\t-webkit-overflow-scrolling: touch;
+\t\t\t\t}
+\t\t\t}
+\t\t\t@media (max-width: 720px) {
+\t\t\t\tbody {
+\t\t\t\t\tpadding: 12px;
+\t\t\t\t\tfont-size: 19px;
+\t\t\t\t}
+\t\t\t\t.page-shell {
+\t\t\t\t\tpadding: 18px 16px 24px;
 \t\t\t\t}
 \t\t\t\t.header-tools {
 \t\t\t\t\tjustify-content: flex-start;
 \t\t\t\t}
+\t\t\t\t.header-logo img {
+\t\t\t\t\twidth: 220px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="1"] {
+\t\t\t\t\tfont-size: 16px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="2"] {
+\t\t\t\t\tfont-size: 20px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="3"] {
+\t\t\t\t\tfont-size: 23px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="4"] {
+\t\t\t\t\tfont-size: 31px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="5"],
+\t\t\t\t.resource-body font[size="6"] {
+\t\t\t\t\tfont-size: 35px;
+\t\t\t\t}
+\t\t\t}
+\t\t\t@media (max-width: 720px) and (orientation: portrait) {
+\t\t\t\tbody {
+\t\t\t\t\tfont-size: 20px;
+\t\t\t\t\tline-height: 1.82;
+\t\t\t\t}
+\t\t\t\t.header-button {
+\t\t\t\t\tfont-size: 17px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="2"] {
+\t\t\t\t\tfont-size: 21px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="3"] {
+\t\t\t\t\tfont-size: 24px;
+\t\t\t\t}
+\t\t\t\t.resource-body font[size="4"] {
+\t\t\t\t\tfont-size: 32px;
+\t\t\t\t}
 \t\t\t}
 \t\t</style>"""
+
+GA_SNIPPET = """\t\t<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPRBCFWPW6"></script>
+\t\t<script>
+\t\t\twindow.dataLayer = window.dataLayer || [];
+\t\t\tfunction gtag(){dataLayer.push(arguments);}
+\t\t\tgtag('js', new Date());
+
+\t\t\tgtag('config', 'G-ZPRBCFWPW6');
+\t\t</script>"""
 
 
 def clean_analytics(text: str) -> str:
@@ -237,6 +328,7 @@ def modernize_document(path: Path) -> None:
         '\t\t<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">\n'
         '\t\t<meta name="generator" content="Adobe GoLive 6">\n'
         f"\t\t<title>{html.escape(title)}</title>\n\n"
+        f"{GA_SNIPPET}\n\n"
         f"{STYLE}\n\n"
         "\t</head>\n\n"
         "\t<body>\n"

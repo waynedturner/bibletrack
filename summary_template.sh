@@ -83,6 +83,13 @@ generate_summary() {
 
   fi
 
+  local version
+  version=$(basename "$(dirname "$summary_file")")
+  local version_label="KJV"
+  if [ "$version" = "nkjv" ]; then
+    version_label="NKJV"
+  fi
+
   local ts
   if [ -z "$SUMMARY_TIMESTAMP" ]; then
     ts=$(date +%s)
@@ -91,6 +98,9 @@ generate_summary() {
   fi
   next_url="$(next_uri "$month" "$day")?v=${ts}"
   prev_url="$(prev_uri "$month" "$day")?v=${ts}"
+  title="BibleTrack Summary: $(month_to_name "$month") $day"
+  description="Read BibleTrack's daily Bible commentary and reading plan for $(month_to_name "$month") $day in the ${version_label}, with linked study resources and related Bible notes."
+  canonical_url="https://www.bibletrack.org/summary2/${version}/${month}-${day}.html"
 
   if [ ! -e "$summary_tmp" ]; then
     extract_lines "summary_template.html" "" "{{body}}" > "$summary_tmp"
@@ -99,6 +109,9 @@ generate_summary() {
   sed "s/{{month}}/$(month_to_name "$month")/g" "$summary_tmp" |
   sed "s/{{month_num}}/$month/g" |
   sed "s/{{day}}/$day/g" |
+  sed "s|{{title}}|$title|g" |
+  sed "s|{{description}}|$description|g" |
+  sed "s|{{canonical_url}}|$canonical_url|g" |
   sed "s/{{next_url}}/$next_url/g" |
   sed "s/{{prev_url}}/$prev_url/g" |
   sed "s/{{timestamp}}/$ts/g" > "$out_file"
@@ -136,3 +149,11 @@ for changed_file in $changed_files; do
   generate_summary "$changed_file" "$output_dir/$name"
 done
 
+python3 scripts/generate_search_assets.py
+
+mkdir -p ./upload/root
+cp index.html ./upload/root/index.html
+cp Search.html ./upload/root/Search.html
+cp robots.txt ./upload/root/robots.txt
+cp sitemap.xml ./upload/root/sitemap.xml
+cp search-index.json ./upload/root/search-index.json

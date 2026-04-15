@@ -1,24 +1,29 @@
 from pathlib import Path
+from html import unescape
+from datetime import date, timedelta
 import re
 
 
 STYLE_BLOCK = """
 \t\t<style type="text/css">
+\t\t\thtml {
+\t\t\t\t-webkit-text-size-adjust: 100%;
+\t\t\t}
 \t\t\tbody {
 \t\t\t\tmargin: 0;
 \t\t\t\tpadding: 24px;
 \t\t\t\tfont-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+\t\t\t\tfont-size: 17px;
 \t\t\t\tcolor: #1f2933;
-\t\t\t\tbackground:
-\t\t\t\t\tradial-gradient(circle at top right, rgba(239, 230, 211, 0.8), transparent 26%),
-\t\t\t\t\tlinear-gradient(180deg, #ffffff 0%, #fffdf8 48%, #ffffff 100%);
+\t\t\t\tbackground: #ffffff;
 \t\t\t\tline-height: 1.6;
 \t\t\t}
 \t\t\ta {
 \t\t\t\tcolor: #183153;
 \t\t\t}
 \t\t\t.page-shell {
-\t\t\t\tmax-width: 1040px;
+\t\t\t\twidth: 1040px;
+\t\t\t\tmax-width: 100%;
 \t\t\t\tmargin: 0 auto;
 \t\t\t\tpadding: 26px 30px 42px;
 \t\t\t\tborder: 1px solid #d8ccb6;
@@ -88,6 +93,25 @@ STYLE_BLOCK = """
 \t\t\t.article-card p {
 \t\t\t\tmargin: 0;
 \t\t\t}
+\t\t\tfont[size="1"] {
+\t\t\t\tfont-size: 13px;
+\t\t\t}
+\t\t\tfont[size="2"] {
+\t\t\t\tfont-size: 17px;
+\t\t\t\tline-height: 1.7;
+\t\t\t}
+\t\t\tfont[size="3"] {
+\t\t\t\tfont-size: 20px;
+\t\t\t\tline-height: 1.6;
+\t\t\t}
+\t\t\tfont[size="4"] {
+\t\t\t\tfont-size: 24px;
+\t\t\t\tline-height: 1.35;
+\t\t\t}
+\t\t\tfont[size="5"] {
+\t\t\t\tfont-size: 30px;
+\t\t\t\tline-height: 1.25;
+\t\t\t}
 \t\t\t.note-box {
 \t\t\t\tfloat: right;
 \t\t\t\twidth: 300px;
@@ -99,6 +123,29 @@ STYLE_BLOCK = """
 \t\t\t.note-box td {
 \t\t\t\tpadding: 12px 14px;
 \t\t\t\tcolor: #5d6b79;
+\t\t\t}
+\t\t\t.comparison-table {
+\t\t\t\twidth: 90%;
+\t\t\t\tmargin: 20px auto;
+\t\t\t\tborder-collapse: collapse;
+\t\t\t\tbackground: #f7f3ea;
+\t\t\t\tborder: 1px solid #d8ccb6;
+\t\t\t}
+\t\t\t.comparison-table td,
+\t\t\t.comparison-table th {
+\t\t\t\tpadding: 10px 12px;
+\t\t\t\tborder: 1px solid #d8ccb6;
+\t\t\t\tbackground: #fffdf8;
+\t\t\t\tcolor: #1f2933;
+\t\t\t\tvertical-align: top;
+\t\t\t}
+\t\t\t.comparison-table th,
+\t\t\t.comparison-table tr:first-child td {
+\t\t\t\tbackground: #f1eadb;
+\t\t\t\tfont-weight: bold;
+\t\t\t}
+\t\t\t.comparison-table font {
+\t\t\t\tcolor: #1f2933;
 \t\t\t}
 \t\t\t.page-footer {
 \t\t\t\tmargin-top: 28px;
@@ -137,12 +184,61 @@ STYLE_BLOCK = """
 \t\t\t\tfont-weight: bold;
 \t\t\t\tcursor: pointer;
 \t\t\t}
-\t\t\t@media (max-width: 720px) {
+\t\t\t@media (max-width: 900px), (pointer: coarse) {
 \t\t\t\tbody {
-\t\t\t\t\tpadding: 14px;
+\t\t\t\t\tpadding: 16px;
+\t\t\t\t\tfont-size: 18px;
+\t\t\t\t\tline-height: 1.72;
 \t\t\t\t}
 \t\t\t\t.page-shell {
-\t\t\t\t\tpadding: 18px;
+\t\t\t\t\tpadding: 22px 20px 28px;
+\t\t\t\t}
+\t\t\t\t.header-button,
+\t\t\t\t.toggle-button,
+\t\t\t\t.date-picker label,
+\t\t\t\t.date-picker input,
+\t\t\t\t.date-picker button {
+\t\t\t\t\tfont-size: 16px;
+\t\t\t\t}
+\t\t\t\t.article-card h3 {
+\t\t\t\t\tfont-size: 21px;
+\t\t\t\t}
+\t\t\t\t.note-box td,
+\t\t\t\t.comparison-table td,
+\t\t\t\t.comparison-table th {
+\t\t\t\t\tfont-size: 18px;
+\t\t\t\t\tline-height: 1.7;
+\t\t\t\t}
+\t\t\t\tfont[size="1"] {
+\t\t\t\t\tfont-size: 15px;
+\t\t\t\t}
+\t\t\t\tfont[size="2"] {
+\t\t\t\t\tfont-size: 19px;
+\t\t\t\t\tline-height: 1.8;
+\t\t\t\t}
+\t\t\t\tfont[size="3"] {
+\t\t\t\t\tfont-size: 22px;
+\t\t\t\t}
+\t\t\t\tfont[size="4"] {
+\t\t\t\t\tfont-size: 28px;
+\t\t\t\t}
+\t\t\t\tfont[size="5"] {
+\t\t\t\t\tfont-size: 32px;
+\t\t\t\t}
+\t\t\t\t.comparison-table {
+\t\t\t\t\tdisplay: block;
+\t\t\t\t\toverflow-x: auto;
+\t\t\t\t\t-webkit-overflow-scrolling: touch;
+\t\t\t\t}
+\t\t\t}
+\t\t\t@media (max-width: 720px) {
+\t\t\t\tbody {
+\t\t\t\t\tpadding: 12px;
+\t\t\t\t\tfont-size: 19px;
+\t\t\t\t}
+\t\t\t\t.page-shell {
+\t\t\t\t\tpadding: 18px 16px 24px;
+\t\t\t\t\tborder-radius: 14px;
 \t\t\t\t}
 \t\t\t\t.header-controls {
 \t\t\t\t\talign-items: flex-start;
@@ -157,8 +253,66 @@ STYLE_BLOCK = """
 \t\t\t\t\twidth: 100%;
 \t\t\t\t\tmargin-left: 0;
 \t\t\t\t}
+\t\t\t\t.header-bar {
+\t\t\t\t\tgap: 14px;
+\t\t\t\t}
+\t\t\t\t.header-logo img {
+\t\t\t\t\twidth: 220px;
+\t\t\t\t}
+\t\t\t\tfont[size="1"] {
+\t\t\t\t\tfont-size: 16px;
+\t\t\t\t}
+\t\t\t\tfont[size="2"] {
+\t\t\t\t\tfont-size: 20px;
+\t\t\t\t}
+\t\t\t\tfont[size="3"] {
+\t\t\t\t\tfont-size: 23px;
+\t\t\t\t}
+\t\t\t\tfont[size="4"] {
+\t\t\t\t\tfont-size: 30px;
+\t\t\t\t}
+\t\t\t\tfont[size="5"] {
+\t\t\t\t\tfont-size: 34px;
+\t\t\t\t}
+\t\t\t}
+\t\t\t@media (max-width: 720px) and (orientation: portrait) {
+\t\t\t\tbody {
+\t\t\t\t\tfont-size: 20px;
+\t\t\t\t\tline-height: 1.8;
+\t\t\t\t}
+\t\t\t\t.header-button,
+\t\t\t\t.toggle-button,
+\t\t\t\t.date-picker label,
+\t\t\t\t.date-picker input,
+\t\t\t\t.date-picker button {
+\t\t\t\t\tfont-size: 17px;
+\t\t\t\t}
+\t\t\t\t.article-card h3 {
+\t\t\t\t\tfont-size: 22px;
+\t\t\t\t}
+\t\t\t\tfont[size="2"] {
+\t\t\t\t\tfont-size: 21px;
+\t\t\t\t}
+\t\t\t\tfont[size="3"] {
+\t\t\t\t\tfont-size: 24px;
+\t\t\t\t}
+\t\t\t\tfont[size="4"] {
+\t\t\t\t\tfont-size: 32px;
+\t\t\t\t}
 \t\t\t}
 \t\t</style>
+"""
+
+
+GA_SNIPPET = """
+\t\t<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPRBCFWPW6"></script>
+\t\t<script>
+\t\t\twindow.dataLayer = window.dataLayer || [];
+\t\t\tfunction gtag(){dataLayer.push(arguments);}
+\t\t\tgtag('js', new Date());
+
+\t\t\tgtag('config', 'G-ZPRBCFWPW6');
+\t\t</script>
 """
 
 
@@ -183,8 +337,16 @@ FOOTER_AND_SCRIPT = """
 
 
 BODY_END_RE = re.compile(r"</body>\s*</html>\s*$", re.I | re.S)
+STYLE_BLOCK_RE = re.compile(r"\s*<style type=\"text/css\">.*?\.page-shell.*?@media \(max-width: 720px\).*?</style>\s*", re.I | re.S)
+GENERATED_HEADER_RE = re.compile(r'^\s*<div class="page-shell">\s*<div class="header-bar">.*?</div>\s*</div>\s*', re.I | re.S)
+GENERATED_FOOTER_RE = re.compile(
+    r'\s*<p class="page-footer">Copyright 2003-2026 BibleTrack</p>\s*</div>\s*'
+    r'<script type="text/javascript">\s*function openSelectedDate\(version\)\s*\{.*?\}\s*</script>\s*$',
+    re.I | re.S,
+)
 
 def clean_text(text: str) -> str:
+    text = unescape(text)
     text = re.sub(r"<[^>]+>", " ", text)
     text = text.replace("&nbsp;", " ")
     text = re.sub(r"\s+", " ", text)
@@ -225,6 +387,18 @@ def find_prev_next(text: str):
     return nav_match.group(0) if nav_match else "", prev_href, clean_text(prev_label), next_href, clean_text(next_label)
 
 
+def fallback_prev_next(month: int, day: int):
+    current = date(2024, month, day)
+    prev_day = current - timedelta(days=1)
+    next_day = current + timedelta(days=1)
+    return (
+        f"{prev_day.month}-{prev_day.day}.html",
+        "Previous Reading",
+        f"{next_day.month}-{next_day.day}.html",
+        "Next Reading",
+    )
+
+
 def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_label: str, next_href: str, next_label: str) -> str:
     prev_label = prev_label or "Previous"
     next_label = next_label or "Next"
@@ -247,7 +421,7 @@ def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_
     return (
         '\t<body>\n'
         '\t\t<div class="page-shell">\n'
-        '\t\t<div class="header-bar">\n'
+        '\t\t\t<div class="header-bar">\n'
         '\t\t\t<a class="header-logo" href="http://www.bibletrack.org/" target="_self"><img src="../../BT-logo_289x62.jpg" alt="BibleTrack" /></a>\n'
         '\t\t\t<div class="header-controls">\n'
         '\t\t\t\t<div class="header-links">\n'
@@ -264,7 +438,7 @@ def build_header(version: str, slug: str, date_value: str, prev_href: str, prev_
         '\t\t\t\t\t</div>\n'
         '\t\t\t\t</div>\n'
         '\t\t\t</div>\n'
-        '\t\t</div>\n'
+        '\t\t\t</div>\n'
     )
 
 
@@ -298,23 +472,29 @@ def transform_file(path: Path) -> bool:
     date_value = f"2026-{int(month):02d}-{int(day):02d}"
 
     nav_block, prev_href, prev_label, next_href, next_label = find_prev_next(text)
+    if not prev_href or not next_href:
+        prev_href, prev_label, next_href, next_label = fallback_prev_next(int(month), int(day))
 
     analytics_match = re.search(
         r'<script[^>]*urchin\.js[^>]*>.*?</script>\s*<script[^>]*>.*?_uacct\s*=.*?urchinTracker\(\);.*?</script>',
         text,
         re.I | re.S,
     )
-    analytics = analytics_match.group(0).strip() + "\n" if analytics_match else ""
     if analytics_match:
         text = text.replace(analytics_match.group(0), "")
 
-    text = re.sub(r"</head>", STYLE_BLOCK + "\n\t</head>", text, count=1, flags=re.I)
+    text = STYLE_BLOCK_RE.sub("\n", text)
+    text = re.sub(r"</head>", GA_SNIPPET + "\n" + STYLE_BLOCK + "\n\t</head>", text, count=1, flags=re.I)
 
     body_match = re.search(r"<body[^>]*>(.*)</body>", text, re.I | re.S)
     if not body_match:
         return False
 
     inner = body_match.group(1)
+    inner = GENERATED_HEADER_RE.sub("", inner, count=1)
+    inner = GENERATED_FOOTER_RE.sub("", inner, count=1)
+    inner = re.sub(r'^\s*(</div>\s*)+', '', inner, count=1, flags=re.I)
+    inner = re.sub(r'\s*(</div>\s*)+$', '', inner, count=1, flags=re.I)
     if nav_block:
         inner = inner.replace(nav_block, "", 1)
 
@@ -333,6 +513,12 @@ def transform_file(path: Path) -> bool:
     inner = re.sub(
         r'<a href="\.\./(?:nkjv|kjv)/[^"]+"[^>]*>\s*<strong><font[^>]*>For (?:New )?King James text and commentary, click here\.\s*</font></strong></a>',
         "",
+        inner,
+        flags=re.I | re.S,
+    )
+    inner = re.sub(
+        r'<font[^>]*>\s*<b>\s*<a href="\.\./(?:nkjv|kjv)/[^"]+"[^>]*>.*?For (?:New )?King James text and commentary, click here\.\s*.*?</a>\s*<br>\s*',
+        '<font size="5">',
         inner,
         flags=re.I | re.S,
     )
@@ -361,6 +547,18 @@ def transform_file(path: Path) -> bool:
         flags=re.I | re.S,
     )
     inner = re.sub(
+        r'<table[^>]*>\s*<tr>\s*<td[^>]*>\s*<strong>\s*<font[^>]*>\s*This is the New King James text of the passages with abbreviated notes\.\s*</font>\s*</strong>\s*</td>\s*<td[^>]*>.*?Click here to return to the KJV page with full commentary\..*?</td>\s*</tr>\s*</table>',
+        '',
+        inner,
+        flags=re.I | re.S,
+    )
+    inner = re.sub(
+        r'<table[^>]*>\s*<tr>\s*<td[^>]*>\s*<strong>\s*<font[^>]*>\s*This is the King James Version text of the passages with abbreviated notes\.\s*</font>\s*</strong>\s*</td>\s*<td[^>]*>.*?Click here to return to the NKJV page with full commentary\..*?</td>\s*</tr>\s*</table>',
+        '',
+        inner,
+        flags=re.I | re.S,
+    )
+    inner = re.sub(
         r'<img[^>]*src="http://www\.bibletrack\.org/notes/image/audio\.jpg"[^>]*>',
         '<img src="../../listen_icon.svg" alt="Listen" width="40" height="40" border="0" />',
         inner,
@@ -373,11 +571,17 @@ def transform_file(path: Path) -> bool:
         flags=re.I,
     )
     inner = re.sub(r'\s+bgcolor="#ffea89"', "", inner, flags=re.I)
+    inner = re.sub(
+        r'<table([^>]*)bgcolor="#cce1ff"([^>]*)>',
+        lambda m: f'<table class="comparison-table"{m.group(1)}{m.group(2)}>',
+        inner,
+        flags=re.I,
+    )
+    inner = re.sub(r'\s+bgcolor="#cce1ff"', "", inner, flags=re.I)
+    inner = re.sub(r'\s+bordercolor(?:light|dark)?="#cce1ff"', "", inner, flags=re.I)
 
     header = build_header(version, slug, date_value, prev_href, prev_label, next_href, next_label)
     new_body = header
-    if analytics:
-        new_body += "\t\t" + analytics.replace("\n", "\n\t\t").rstrip() + "\n"
     new_body += inner.strip() + "\n" + FOOTER_AND_SCRIPT
 
     text = re.sub(r"<body[^>]*>.*</body>", new_body, text, count=1, flags=re.I | re.S)

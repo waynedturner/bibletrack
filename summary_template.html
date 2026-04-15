@@ -2,21 +2,36 @@
 
 <html lang="en">
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="max-age=3600, public, must-revalidate">
+    <meta name="description" content="{{description}}">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="{{canonical_url}}">
+    <link rel="alternate" hreflang="en" href="{{canonical_url}}">
+    <link rel="alternate" hreflang="x-default" href="https://www.bibletrack.org/">
+    <meta property="og:site_name" content="BibleTrack">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{title}}">
+    <meta property="og:description" content="{{description}}">
+    <meta property="og:url" content="{{canonical_url}}">
+    <meta property="og:image" content="https://www.bibletrack.org/BT-logo_web_logo_NEW.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{title}}">
+    <meta name="twitter:description" content="{{description}}">
+    <meta name="twitter:image" content="https://www.bibletrack.org/BT-logo_web_logo_NEW.png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPRBCFWPW6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
+      gtag('config', 'G-ZPRBCFWPW6');
+    </script>
     <title>BibleTrack Summary: {{month}} {{day}}</title>
     <link rel="stylesheet" href="/summary.css?v={{timestamp}}">
 </head>
 <body>
-
-<div id="navPane" class="top-nav-pane">
-    <span class="reading-date">Date:  {{month_num}}-{{day}}</span>
-    <span class="reading-sep">&nbsp;|&nbsp;</span>
-    <a class="prev" href="{{prev_url}}">Previous</a>
-    <a class="next" href="{{next_url}}">Next</a>
-</div>
-
 {{body}}
 
 </body>

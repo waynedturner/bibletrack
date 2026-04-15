@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BibleTrack Search</title>
+  <meta name="description" content="Search BibleTrack daily commentary, study resources, and special Bible topics from one page.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://www.bibletrack.org/Search.html">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPRBCFWPW6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZPRBCFWPW6');
+  </script>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f3ea;
+      --border: #d8ccb6;
+      --text: #1f2933;
+      --muted: #5d6b79;
+      --brand: #183153;
+      --brand-strong: #0f2340;
+      --accent: #8a6a28;
+      --shadow: 0 18px 45px rgba(15, 35, 64, 0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(239, 230, 211, 0.8), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #fffdf8 48%, #ffffff 100%);
+      line-height: 1.6;
+    }
+    a { color: var(--brand); }
+    .shell {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .header {
+      padding: 24px 0 12px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand img {
+      width: 260px;
+      max-width: min(260px, 58vw);
+      height: auto;
+    }
+    .layout {
+      display: grid;
+      gap: 22px;
+      padding: 14px 0 36px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    h1, h2, h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--brand-strong);
+      margin-top: 0;
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+    .lede {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    input[type="search"] {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font: inherit;
+      font-size: 1rem;
+    }
+    button, .button-link {
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 14px;
+      border: 1px solid var(--brand);
+      background: var(--brand);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .button-link.secondary {
+      background: #fff;
+      color: var(--brand-strong);
+      border-color: var(--border);
+    }
+    .utility-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .result-meta {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--accent);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .results {
+      display: grid;
+      gap: 16px;
+    }
+    .result {
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fbf8f0 0%, #ffffff 100%);
+    }
+    .result h3 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+    .result p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .empty {
+      color: var(--muted);
+    }
+    .tips {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .tips li + li {
+      margin-top: 6px;
+    }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 20px, 1040px); }
+      .card { padding: 18px; }
+      .search-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="shell">
+      <a class="brand" href="index.html">
+        <img src="BT-logo_289x62.jpg" alt="BibleTrack logo">
+      </a>
+    </div>
+  </header>
+
+  <main class="shell layout">
+    <section class="card">
+      <h1>Search BibleTrack</h1>
+      <p class="lede">Search the daily commentary, study resources, and topic pages from one place on BibleTrack.</p>
+      <div class="search-row">
+        <input id="query" type="search" placeholder="Search for terms like Davidic covenant, Barnabas, Jeremiah, fasting..." autocomplete="off">
+        <button id="search-button" type="button">Search</button>
+      </div>
+      <div class="utility-row">
+        <a class="button-link secondary" href="index.html">Back to Home</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Search Tips</h2>
+      <ul class="tips">
+        <li>Use two or three meaningful words instead of full sentences.</li>
+        <li>Try names, doctrines, places, or Bible book names.</li>
+        <li>Results include daily summary pages and BibleTrack resource articles.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 id="results-heading">Results</h2>
+      <p id="status" class="empty">Type a search above to begin.</p>
+      <div id="results" class="results"></div>
+    </section>
+  </main>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+    const queryEl = document.getElementById("query");
+    const searchButton = document.getElementById("search-button");
+    let searchData = null;
+
+    function tokenize(text) {
+      return (text.toLowerCase().match(/[a-z0-9']+/g) || [])
+        .map(token => token.replace(/^'+|'+$/g, ""))
+        .filter(token => token.length >= 3);
+    }
+
+    function scoreDocument(doc, terms, matchCounts) {
+      let score = 0;
+      const title = doc.title.toLowerCase();
+      const excerpt = doc.excerpt.toLowerCase();
+      for (const term of terms) {
+        if (title.includes(term)) score += 8;
+        if (excerpt.includes(term)) score += 3;
+        score += (matchCounts[term] || 0);
+      }
+      return score;
+    }
+
+    function renderResults(items) {
+      resultsEl.innerHTML = "";
+      if (!items.length) {
+        statusEl.textContent = "No matching pages were found. Try broader or shorter search terms.";
+        return;
+      }
+      statusEl.textContent = `${items.length} result${items.length === 1 ? "" : "s"} found.`;
+      for (const item of items) {
+        const article = document.createElement("article");
+        article.className = "result";
+        article.innerHTML = `
+          <span class="result-meta">${item.category}</span>
+          <h3><a href="${item.url}">${item.title}</a></h3>
+          <p>${item.excerpt}</p>
+        `;
+        resultsEl.appendChild(article);
+      }
+    }
+
+    async function loadIndex() {
+      if (searchData) return searchData;
+      const response = await fetch("search-index.json?v=20260407");
+      searchData = await response.json();
+      return searchData;
+    }
+
+    async function runSearch() {
+      const query = queryEl.value.trim();
+      if (!query) {
+        statusEl.textContent = "Type a search above to begin.";
+        resultsEl.innerHTML = "";
+        return;
+      }
+
+      statusEl.textContent = "Searching...";
+      resultsEl.innerHTML = "";
+
+      const data = await loadIndex();
+      const terms = [...new Set(tokenize(query))];
+      if (!terms.length) {
+        statusEl.textContent = "Please use at least one meaningful word with 3 or more letters.";
+        return;
+      }
+
+      const docScores = new Map();
+      const matchCountsByDoc = new Map();
+
+      for (const term of terms) {
+        const ids = data.index[term] || [];
+        for (const id of ids) {
+          docScores.set(id, (docScores.get(id) || 0) + 1);
+          const termMap = matchCountsByDoc.get(id) || {};
+          termMap[term] = (termMap[term] || 0) + 1;
+          matchCountsByDoc.set(id, termMap);
+        }
+      }
+
+      const ranked = [...docScores.keys()]
+        .map(id => {
+          const doc = data.documents[id];
+          return {
+            ...doc,
+            score: scoreDocument(doc, terms, matchCountsByDoc.get(id) || {})
+          };
+        })
+        .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
+        .slice(0, 40);
+
+      renderResults(ranked);
+    }
+
+    searchButton.addEventListener("click", runSearch);
+    queryEl.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runSearch();
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) {
+      queryEl.value = q;
+      runSearch();
+    }
+  </script>
+</body>
+</html>

@@ -14,37 +14,18 @@ def build_archive_payload(day_doc: DayDocument) -> dict:
     full_prose = "\n\n".join([f"### {s.title}\n{s.commentary_text}" for s in day_doc.sections])
     return {
         "memory_type": "note",
-        "id": f"bibletrack:{day_doc.reading_plan_key}:full-commentary:archive",
+        "id": f"bibletrack:{day_doc.reading_plan_key}:full-commentary",
         "content": full_prose,
         "tags": f"bibletrack,archive,{day_doc.reading_plan_key}",
         "source": "bibletrack_ingestor",
         "salience": 0.5,
+        "hidden": True,
         "metadata": {
             "source_url": day_doc.source_url,
             "translation": day_doc.translation,
             "reading_refs": day_doc.reading_refs,
             "content_hash": day_doc.content_hash,
             "is_original_source": True
-        },
-    }
-
-
-def build_detail_payload(day_doc: DayDocument, section: Section) -> dict:
-    return {
-        "memory_type": "episode",
-        "id": section.canonical_id,
-        "content": f"## {section.title}\n\n{section.commentary_text}",
-        "tags": f"bibletrack,commentary,{day_doc.reading_plan_key}",
-        "source": "bibletrack_ingestor",
-        "salience": 0.8,
-        "metadata": {
-            "immutable": True,
-            "source_url": day_doc.source_url,
-            "translation": day_doc.translation,
-            "refs": section.bible_references,
-            "people": section.people,
-            "places": section.places,
-            "links": [link.model_dump() for link in section.links],
         },
     }
 
@@ -74,21 +55,15 @@ def main() -> None:
 
     adapter = CortexMCPAdapter()
     
-    # 1. Store full archive note
+    # 1. Store full archive note (hidden by default)
     archive_id = adapter.upsert_memory(build_archive_payload(day_doc))
 
     for section in day_doc.sections:
-        # 2. Store segmented detail
-        detail_id = adapter.upsert_memory(build_detail_payload(day_doc, section))
-        
-        # 3. Store summary
+        # 2. Store summary
         summary_id = adapter.upsert_memory(build_summary_payload(section))
 
-        # 4. Link summary to detail
-        adapter.link_memories(summary_id, detail_id, "summarizes")
-        
-        # 5. Link detail to archive
-        adapter.link_memories(detail_id, archive_id, "is_part_of")
+        # 3. Link summary to archive
+        adapter.link_memories(summary_id, archive_id, "summarizes")
 
     print(
         json.dumps(

@@ -4,5 +4,6 @@ upload
 .codex/
 .gemini/
 .claude/
+.closedloop-ai/
 __pycache__/
 *.pyc

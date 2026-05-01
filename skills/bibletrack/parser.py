@@ -69,8 +69,8 @@ def _is_heading(tag: Tag) -> bool:
         return True
     if tag.name == "p":
         classes = " ".join(tag.get("class", []))
-        strong = tag.find("strong")
-        return "heading" in classes.lower() or (strong is not None and len(tag.get_text(strip=True)) < 120)
+        bold = tag.find(["strong", "b"])
+        return "heading" in classes.lower() or (bold is not None and len(tag.get_text(strip=True)) < 120)
     return False
 
 
@@ -171,7 +171,7 @@ def parse_day(date_key: str, translation: str) -> DayDocument:
         all_links.extend(section_links)
 
         section = Section(
-            canonical_id=f"bibletrack:{translation.lower()}:{date_key}:{_slugify(title)}",
+            canonical_id=f"bibletrack:{date_key}:{_slugify(title)}",
             title=title,
             commentary_text=commentary,
             bible_references=extract_refs(f"{title}\n{commentary}"),

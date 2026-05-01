@@ -10,21 +10,40 @@ from parser import parse_day
 from summarizer import summarize
 
 
-def build_detail_payload(day_doc: DayDocument, section: Section) -> dict:
+def build_archive_payload(day_doc: DayDocument) -> dict:
+    full_prose = "\n\n".join([f"### {s.title}\n{s.commentary_text}" for s in day_doc.sections])
     return {
-        "memory_type": "detail",
-        "canonical_id": section.canonical_id,
-        "title": section.title,
-        "content": section.commentary_text,
+        "memory_type": "note",
+        "id": f"bibletrack:{day_doc.reading_plan_key}:full-commentary:archive",
+        "content": full_prose,
+        "tags": f"bibletrack,archive,{day_doc.reading_plan_key}",
+        "source": "bibletrack_ingestor",
+        "salience": 0.5,
         "metadata": {
-            "immutable": True,
-            "decay_allowed": False,
-            "intent_preserving": True,
             "source_url": day_doc.source_url,
             "translation": day_doc.translation,
-            "reading_plan_key": day_doc.reading_plan_key,
-            "semantic_date": None,
+            "reading_refs": day_doc.reading_refs,
+            "content_hash": day_doc.content_hash,
+            "is_original_source": True
+        },
+    }
+
+
+def build_detail_payload(day_doc: DayDocument, section: Section) -> dict:
+    return {
+        "memory_type": "episode",
+        "id": section.canonical_id,
+        "content": f"## {section.title}\n\n{section.commentary_text}",
+        "tags": f"bibletrack,commentary,{day_doc.reading_plan_key}",
+        "source": "bibletrack_ingestor",
+        "salience": 0.8,
+        "metadata": {
+            "immutable": True,
+            "source_url": day_doc.source_url,
+            "translation": day_doc.translation,
             "refs": section.bible_references,
+            "people": section.people,
+            "places": section.places,
             "links": [link.model_dump() for link in section.links],
         },
     }
@@ -33,22 +52,9 @@ def build_detail_payload(day_doc: DayDocument, section: Section) -> dict:
 def build_summary_payload(section: Section) -> dict:
     return {
         "memory_type": "summary",
-        "canonical_id": f"{section.canonical_id}:summary",
+        "id": f"{section.canonical_id}:summary",
         "content": summarize(section.commentary_text),
-    }
-
-
-def build_index_payload(section: Section) -> dict:
-    return {
-        "memory_type": "index",
-        "canonical_id": f"{section.canonical_id}:index",
-        "content": {
-            "title": section.title,
-            "refs": section.bible_references,
-            "people": section.people,
-            "places": section.places,
-            "themes": section.themes,
-        },
+        "tags": "bibletrack,summary",
     }
 
 
@@ -60,53 +66,37 @@ def main() -> None:
 
     day_doc = parse_day(date_key=args.date, translation=args.translation)
 
-    # Use the project's temporary directory for script outputs
+    # Use a consistent temporary directory for script outputs
     out_dir = Path("/Users/stephenturner/.gemini/tmp/bibletrack/out")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_file = out_dir / f"{args.translation.lower()}-{args.date}.json"
     out_file.write_text(json.dumps(day_doc.model_dump(), indent=2, ensure_ascii=False), encoding="utf-8")
 
     adapter = CortexMCPAdapter()
-    detail_count = 0
-    summary_count = 0
-    index_count = 0
-
-    # Archive original commentary as a single note (translation-agnostic)
-    full_original_prose = "\n\n".join(s.commentary_text for s in day_doc.sections)
-    adapter.upsert_memory({
-        "memory_type": "note",
-        "canonical_id": f"bibletrack:{day_doc.reading_plan_key}:full-commentary",
-        "content": full_original_prose,
-        "metadata": {
-            "source_url": day_doc.source_url,
-            "translation": day_doc.translation,
-            "date_key": day_doc.reading_plan_key,
-            "is_original_source": True
-        }
-    })
+    
+    # 1. Store full archive note
+    archive_id = adapter.upsert_memory(build_archive_payload(day_doc))
 
     for section in day_doc.sections:
+        # 2. Store segmented detail
         detail_id = adapter.upsert_memory(build_detail_payload(day_doc, section))
-        detail_count += 1
-
+        
+        # 3. Store summary
         summary_id = adapter.upsert_memory(build_summary_payload(section))
-        summary_count += 1
 
-        index_id = adapter.upsert_memory(build_index_payload(section))
-        index_count += 1
-
+        # 4. Link summary to detail
         adapter.link_memories(summary_id, detail_id, "summarizes")
-        adapter.link_memories(index_id, detail_id, "indexes")
+        
+        # 5. Link detail to archive
+        adapter.link_memories(detail_id, archive_id, "is_part_of")
 
     print(
         json.dumps(
             {
                 "source_url": day_doc.source_url,
                 "sections_ingested": len(day_doc.sections),
-                "detail_created": detail_count,
-                "summary_created": summary_count,
-                "index_created": index_count,
                 "content_hash": day_doc.content_hash,
+                "status": "payloads_generated"
             },
             indent=2,
             ensure_ascii=False,

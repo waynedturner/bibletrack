@@ -25,7 +25,7 @@ class DayDocument(BaseModel):
     source_url: str
     translation: str
     reading_plan_key: str
-    semantic_date: None = None
+    semantic_date: str | None = None
     reading_refs: list[str]
     links: list[SourceLink]
     sections: list[Section]

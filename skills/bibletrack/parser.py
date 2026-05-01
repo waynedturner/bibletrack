@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from pathlib import Path
 from typing import Iterable
 from urllib.parse import urljoin
 
@@ -23,7 +24,7 @@ BOOK_NAMES = (
     "Colossians|1\\sThessalonians|2\\sThessalonians|1\\sTimothy|2\\sTimothy|Titus|"
     "Philemon|Hebrews|James|1\\sPeter|2\\sPeter|1\\sJohn|2\\sJohn|3\\sJohn|Jude|Revelation"
 )
-REF_RE = re.compile(rf"\\b(?:{BOOK_NAMES})\\s+\\d+:\\d+(?:-\\d+)?(?:,\\s*\\d+:\\d+(?:-\\d+)?)*")
+REF_RE = re.compile(rf"\b(?:{BOOK_NAMES})\s+\d+:\d+(?:-\d+)?(?:\s*,\s*\d+:\d+(?:-\d+)?)*")
 
 
 def get_url(date_key: str, translation: str) -> str:
@@ -31,6 +32,15 @@ def get_url(date_key: str, translation: str) -> str:
 
 
 def fetch_html(url: str) -> str:
+    # Try local file first
+    parts = url.split("/")
+    translation = parts[-2]
+    date_key = parts[-1].replace(".html", "")
+    local_path = Path(f"summary2/{translation}/{date_key}.html")
+
+    if local_path.exists():
+        return local_path.read_text(encoding="iso-8859-1")
+
     response = requests.get(url, timeout=30)
     response.raise_for_status()
     return response.text
@@ -170,6 +180,7 @@ def parse_day(date_key: str, translation: str) -> DayDocument:
         section_links = _dedupe_links(section_links)
         all_links.extend(section_links)
 
+        # Translation-agnostic ID format: bibletrack:{date_key}:{slug}
         section = Section(
             canonical_id=f"bibletrack:{date_key}:{_slugify(title)}",
             title=title,

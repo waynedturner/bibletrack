@@ -5,37 +5,40 @@ import json
 from pathlib import Path
 
 from cortex_mcp_adapter import CortexMCPAdapter
-from models import DayDocument, Section
+from models import DayDocument
 from parser import parse_day
-from summarizer import summarize
+from summarizer import consolidate_day_prose, summarize_day
 
 
-def build_archive_payload(day_doc: DayDocument) -> dict:
-    full_prose = "\n\n".join([f"### {s.title}\n{s.commentary_text}" for s in day_doc.sections])
+def build_daily_commentary_payload(day_doc: DayDocument) -> dict:
+    """The full cleaned prose archive. Hidden from default search to prevent flooding."""
     return {
         "memory_type": "note",
-        "id": f"bibletrack:{day_doc.reading_plan_key}:full-commentary",
-        "content": full_prose,
-        "tags": f"bibletrack,archive,{day_doc.reading_plan_key}",
-        "source": "bibletrack_ingestor",
-        "salience": 0.5,
-        "hidden": True,
+        "id": f"bibletrack:{day_doc.reading_plan_key}:daily-commentary",
+        "content": consolidate_day_prose(day_doc),
+        "tags": f"bibletrack,commentary,{day_doc.reading_plan_key}",
+        "hidden": True,  # Prevent context flooding
         "metadata": {
             "source_url": day_doc.source_url,
             "translation": day_doc.translation,
             "reading_refs": day_doc.reading_refs,
             "content_hash": day_doc.content_hash,
-            "is_original_source": True
         },
     }
 
 
-def build_summary_payload(section: Section) -> dict:
+def build_daily_summary_payload(day_doc: DayDocument) -> dict:
+    """Compact summary for efficient search and high-level recall."""
     return {
         "memory_type": "summary",
-        "id": f"{section.canonical_id}:summary",
-        "content": summarize(section.commentary_text),
-        "tags": "bibletrack,summary",
+        "id": f"bibletrack:{day_doc.reading_plan_key}:daily-summary",
+        "content": summarize_day(day_doc),
+        "tags": f"bibletrack,summary,{day_doc.reading_plan_key}",
+        "metadata": {
+            "source_url": day_doc.source_url,
+            "translation": day_doc.translation,
+            "content_hash": day_doc.content_hash,
+        },
     }
 
 
@@ -50,28 +53,31 @@ def main() -> None:
     # Use a consistent temporary directory for script outputs
     out_dir = Path("/Users/stephenturner/.gemini/tmp/bibletrack/out")
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_file = out_dir / f"{args.translation.lower()}-{args.date}.json"
-    out_file.write_text(json.dumps(day_doc.model_dump(), indent=2, ensure_ascii=False), encoding="utf-8")
-
-    adapter = CortexMCPAdapter()
     
-    # 1. Store full archive note (hidden by default)
-    archive_id = adapter.upsert_memory(build_archive_payload(day_doc))
-
-    for section in day_doc.sections:
-        # 2. Store summary
-        summary_id = adapter.upsert_memory(build_summary_payload(section))
-
-        # 3. Link summary to archive
-        adapter.link_memories(summary_id, archive_id, "summarizes")
+    # Store tool payloads in a separate file for the agent to process quietly
+    payloads = [
+        {"tool": "cortex.store", "payload": build_daily_commentary_payload(day_doc)},
+        {"tool": "cortex.store", "payload": build_daily_summary_payload(day_doc)},
+        {
+            "tool": "cortex.link", 
+            "payload": {
+                "source_id": f"bibletrack:{day_doc.reading_plan_key}:daily-summary",
+                "target_id": f"bibletrack:{day_doc.reading_plan_key}:daily-commentary",
+                "relation": "summarizes"
+            }
+        }
+    ]
+    
+    payload_file = out_dir / f"payloads-{args.translation.lower()}-{args.date}.json"
+    payload_file.write_text(json.dumps(payloads, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(
         json.dumps(
             {
-                "source_url": day_doc.source_url,
-                "sections_ingested": len(day_doc.sections),
-                "content_hash": day_doc.content_hash,
-                "status": "payloads_generated"
+                "date": args.date,
+                "status": "payloads_generated_quietly",
+                "payload_file": str(payload_file),
+                "content_hash": day_doc.content_hash
             },
             indent=2,
             ensure_ascii=False,

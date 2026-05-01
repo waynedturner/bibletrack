@@ -18,6 +18,7 @@ def build_daily_commentary_payload(day_doc: DayDocument) -> dict:
         "content": consolidate_day_prose(day_doc),
         "tags": f"bibletrack,commentary,{day_doc.reading_plan_key}",
         "hidden": True,  # Prevent context flooding
+        "retention_policy": "protected",  # Prevent decay of canon commentary
         "metadata": {
             "source_url": day_doc.source_url,
             "translation": day_doc.translation,
@@ -34,6 +35,7 @@ def build_daily_summary_payload(day_doc: DayDocument) -> dict:
         "id": f"bibletrack:{day_doc.reading_plan_key}:daily-summary",
         "content": summarize_day(day_doc),
         "tags": f"bibletrack,summary,{day_doc.reading_plan_key}",
+        "retention_policy": "protected",  # Prevent decay of canon commentary
         "metadata": {
             "source_url": day_doc.source_url,
             "translation": day_doc.translation,

@@ -33,3 +33,7 @@
 | 1-29 | NKJV        | Ingested | 3780fe3e089cb4278b5ccfdf05928160fd744ff34d4b5667c3f0826845cb7615 |
 | 1-30 | NKJV        | Ingested | 811fd674bc872dfa6bcfe8e257ffa425fa06ac89bb860ed18bc99d14d850f691 |
 | 1-31 | NKJV        | Ingested | 9014bb928283abffd21bbfcf6b284ab6368d18b01f50abd484d1542fe984f0fd |
+| 2-1  | NKJV        | Ingested | 66ab4b9ebf42255dc28b1a8c2dcc7c167aa7568220af1976c1cfaa13e7200f5b |
+| 2-2  | NKJV        | Ingested | baf73ea9b855b03891defcebf6cec599303b45b8d5c15d27d8c0375f628c2ad6 |
+| 2-3  | NKJV        | Ingested | 42afd2831378c1f70a302c473abce65b4e2b08fcf384668aab12aff1762d83db |
+| 2-4  | NKJV        | Ingested | f8a23b46863508f3641f1482e9e5a70fed3734e78fd58e81add5d0316bc918f1 |

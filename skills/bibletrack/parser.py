@@ -89,7 +89,6 @@ def _is_verse_like_line(line: str) -> bool:
     return bool(
         not stripped
         or stripped.startswith(">")
-        or re.match(r"^\d{1,3}\s+\S+", stripped)
         or stripped.lower().startswith(("kjv", "nkjv", "niv", "esv", "nasb", "nlt"))
     )
 
@@ -136,7 +135,9 @@ def _collect_commentary_text(nodes: Iterable[Tag | NavigableString]) -> str:
 
 def _links_from_node(node: Tag, base_url: str) -> list[SourceLink]:
     links: list[SourceLink] = []
-    for anchor in node.find_all("a", href=True):
+    anchors = [node] if node.name == "a" and node.has_attr("href") else []
+    anchors.extend(node.find_all("a", href=True))
+    for anchor in anchors:
         absolute = urljoin(base_url, anchor["href"].strip())
         if not absolute.lower().startswith(("http://", "https://")):
             continue
@@ -208,6 +209,9 @@ def parse_day(date_key: str, translation: str) -> DayDocument:
             {
                 "title": section.title,
                 "commentary_text": section.commentary_text,
+                "people": section.people,
+                "places": section.places,
+                "themes": section.themes,
                 "links": [link.model_dump() for link in section.links],
             }
             for section in ordered_sections

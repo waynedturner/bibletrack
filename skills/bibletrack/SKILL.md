@@ -28,12 +28,12 @@ Ingest one BibleTrack daily commentary page at a time into Cortex memory structu
 1. Build URL from input args
 2. Fetch and parse HTML with BeautifulSoup
 3. Extract top reading refs and section headings
-4. **Entity Extraction:** Use `cortex.extract_entities` to identify `Person`, `Place`, `Theme`, and `BibleReference` from sections.
-5. **Entity Resolution:** Call `cortex.resolve_entities` for discovered entities to get canonical IDs.
+4. **Entity Extraction:** Use the separate extraction step to emit one `cortex.extract_entities` request per day so the model can identify `Person`, `Place`, `Theme`, and `BibleReference` from raw commentary text.
+5. **Entity Resolution:** Tell the model to use the requested entity types to determine linking, and prefer batch graph links over one-off links. Resolve extracted entities downstream through Cortex so canonical IDs are model-driven, not hardcoded.
 6. Remove Bible verse-body-like blocks
 7. Preserve commentary prose, Bible references, links, and source URL
 8. Build deterministic section canonical IDs (translation-agnostic) and document hash
-9. Emit memory payloads through `CortexMCPAdapter` including resolved entity links.
+9. Emit structural memory payloads through `CortexMCPAdapter`.
 
 ## Memory objects created per section
 

@@ -37,3 +37,13 @@
 | 2-2  | NKJV        | Ingested | baf73ea9b855b03891defcebf6cec599303b45b8d5c15d27d8c0375f628c2ad6 |
 | 2-3  | NKJV        | Ingested | 42afd2831378c1f70a302c473abce65b4e2b08fcf384668aab12aff1762d83db |
 | 2-4  | NKJV        | Ingested | f8a23b46863508f3641f1482e9e5a70fed3734e78fd58e81add5d0316bc918f1 |
+| 2-5  | NKJV        | Ingested | ce20beaf8980259a2b792b23141bbb97810bd48627c60627e1f61d3db4219e87 |
+| 2-6  | NKJV        | Ingested | 92509941643a826cad4d09ffd553efeb2bfed2168acae75839cee15380301489 |
+| 2-7  | NKJV        | Ingested | a06abc2374a613b5c83d575304154ffe672c03e5e50aabe20d644a8eb9850608 |
+| 2-8  | NKJV        | Ingested | 514b89b13f4ff0cb137b38e28da4cdd6c2a25328c781453f88c34cfb167ffb75 |
+| 2-9  | NKJV        | Ingested | b2d4bc692789c855cee7d8b0c7d509696eaaf0169947e7a50bf40b1d6cb40435 |
+| 2-10 | NKJV        | Ingested | 4122262d4008a93d1d061e1b7b7118015179457c2956812d0ff40ab562e2f4bb |
+| 2-11 | NKJV        | Ingested | 39d5b63d4c1a82e2c6b0e578ae46cdc34d5161e92466fc0026f7b23b220e04e4 |
+| 2-12 | NKJV        | Ingested | 2b31d07de85bff7e4710c4bab4282fa49c5b15814dfcd3b0020925293d6214d7 |
+| 2-13 | NKJV        | Ingested | 408bd79b85a9f5b9f6cce9e29d53cbddcebb47d33b3cb266faf650f0f2e229ef |
+| 2-14 | NKJV        | Ingested | a98d6df329bcc3e859013fc35f75a4be5c0ffbaa7f53c246bde5fd826fcc98af |

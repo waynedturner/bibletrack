@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from models import DayDocument
+from ingestion_state import update_ingestion_state
 from parser import parse_day
 from summarizer import consolidate_day_prose, summarize_day
 
@@ -122,11 +123,14 @@ def main() -> None:
     payload_file = out_dir / f"payloads-{args.translation.lower()}-{args.date}.json"
     payload_file.write_text(json.dumps(payloads, indent=2, ensure_ascii=False), encoding="utf-8")
 
+    ingestion_status = update_ingestion_state(args.date, args.translation, day_doc.content_hash)
+
     print(
         json.dumps(
             {
                 "date": args.date,
-                "status": "payloads_generated_quietly",
+                "status": "payloads_generated_and_recorded",
+                "ingestion_status": ingestion_status,
                 "payload_file": str(payload_file),
                 "content_hash": day_doc.content_hash
             },

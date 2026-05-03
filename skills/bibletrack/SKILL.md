@@ -34,9 +34,11 @@ Ingest one BibleTrack daily commentary page at a time into Cortex memory structu
 7. Preserve commentary prose, Bible references, links, and source URL
 8. Build deterministic section canonical IDs (translation-agnostic) and document hash
 9. Emit structural memory payloads through `CortexMCPAdapter`.
+10. Record ingestion state in `~/.bibletrack/ingestion.sqlite3`.
 
 ## Memory objects created per section
 
+- For ALL memory retention_policy should be 'protected'
 - detail memory (segmented, translation-agnostic)
 - summary memory (summarizes detail)
 - index memory (indexes detail)
@@ -53,3 +55,12 @@ Ingest one BibleTrack daily commentary page at a time into Cortex memory structu
 ## Output
 
 Prints ingestion summary JSON with counts and content hash.
+
+## Status
+
+Use `ingestion_state.py status` to query the SQLite state store with minimal output.
+
+- `--date 4-19` prints a single status word.
+- `--start 4-1 --end 4-7` prints a compact `present/total` count.
+
+Use `ingestion_state.py update` when you need to record or refresh state without running the full ingest.

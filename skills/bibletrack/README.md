@@ -27,6 +27,19 @@ Generate daily commentary payloads:
 python ingest_into_cortex.py --date 4-19 --translation nkjv
 ```
 
+Update ingestion state directly:
+
+```bash
+python ingestion_state.py update --date 4-19 --content-hash abc123
+```
+
+Check ingestion status:
+
+```bash
+python ingestion_state.py status --date 4-19
+python ingestion_state.py status --start 4-1 --end 4-7
+```
+
 ## What it does
 
 1. Fetches one BibleTrack page by `date_key` and `translation`
@@ -40,6 +53,8 @@ python ingest_into_cortex.py --date 4-19 --translation nkjv
 Entity extraction is a separate step so the model can decide people, places, themes, and references independently of the structural ingest pass.
 The extraction request is batched by day and should instruct the model to use the entity types to determine linking and prefer batch graph links.
 By default, both scripts write payload JSON into `~/.bibletrack/tmp`.
+Ingestion state is recorded in `~/.bibletrack/ingestion.sqlite3` instead of the markdown log.
+Single dates print one status word; ranges print a compact `present/total` count.
 
 ## Determinism
 

@@ -15,13 +15,7 @@ pip install -r requirements.txt
 
 ## Run
 
-Generate entity extraction requests:
-
-```bash
-python extract_entities.py --date 4-19 --translation nkjv
-```
-
-Generate daily commentary payloads:
+Run the strict one-day workflow:
 
 ```bash
 python ingest_into_cortex.py --date 4-19 --translation nkjv
@@ -47,12 +41,11 @@ python ingestion_state.py status --start 4-1 --end 4-7
 3. Removes verse-body-like quote content while preserving commentary
 4. Preserves Bible references, links, and source URL
 5. Creates deterministic hashes and canonical IDs
-6. Writes output artifact JSON into `~/.bibletrack/tmp`
-7. Emits detail/summary/index payloads
+6. Runs entity extraction for that one day first
+7. Runs structural ingest for that same one day second
+8. Writes both payload JSON files into `~/.bibletrack/tmp`
 
-Entity extraction is a separate step so the model can decide people, places, themes, and references independently of the structural ingest pass.
-The extraction request is batched by day and should instruct the model to use the entity types to determine linking and prefer batch graph links.
-By default, both scripts write payload JSON into `~/.bibletrack/tmp`.
+The strict workflow is one day per invocation. `ingest_into_cortex.py` is the normal entrypoint because it parses the page once and reuses the same day document for both extraction and structural ingest.
 Ingestion state is recorded in `~/.bibletrack/ingestion.sqlite3` instead of the markdown log.
 Single dates print one status word; ranges print a compact `present/total` count.
 

@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from extract_entities import build_day_extraction_payload as build_entity_extraction_payload
 from models import DayDocument
 from ingestion_state import update_ingestion_state
 from parser import parse_day
@@ -95,6 +96,47 @@ def build_daily_links(day_doc: DayDocument) -> list[dict]:
     return links
 
 
+def build_daily_payloads(day_doc: DayDocument) -> list[dict]:
+    return [
+        {"tool": "cortex.store", "payload": build_daily_commentary_payload(day_doc)},
+        {"tool": "cortex.store", "payload": build_daily_summary_payload(day_doc)},
+        {"tool": "cortex.store", "payload": build_daily_index_payload(day_doc)},
+        *build_daily_links(day_doc),
+    ]
+
+
+def write_day_outputs(
+    day_doc: DayDocument,
+    translation: str,
+    date: str,
+    out_dir: str | Path | None = None,
+    db_path: str | Path | None = None,
+) -> dict:
+    resolved_out_dir = Path(out_dir) if out_dir is not None else Path.home() / ".bibletrack" / "tmp"
+    if not resolved_out_dir.is_absolute():
+        resolved_out_dir = Path.cwd() / resolved_out_dir
+    resolved_out_dir.mkdir(parents=True, exist_ok=True)
+
+    extraction_payload = build_entity_extraction_payload(day_doc)
+    extraction_file = resolved_out_dir / f"entity-extraction-{translation.lower()}-{date}.json"
+    extraction_file.write_text(json.dumps([extraction_payload], indent=2, ensure_ascii=False), encoding="utf-8")
+
+    payloads = build_daily_payloads(day_doc)
+    payload_file = resolved_out_dir / f"payloads-{translation.lower()}-{date}.json"
+    payload_file.write_text(json.dumps(payloads, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    ingestion_status = update_ingestion_state(date, translation, day_doc.content_hash, db_path=db_path)
+
+    return {
+        "date": date,
+        "status": "extraction_and_payloads_generated",
+        "ingestion_status": ingestion_status,
+        "extraction_file": str(extraction_file),
+        "payload_file": str(payload_file),
+        "content_hash": day_doc.content_hash,
+    }
+
+
 def main() -> None:
     arg_parser = argparse.ArgumentParser(description="Ingest one BibleTrack commentary day into Cortex")
     arg_parser.add_argument("--date", required=True, help="BibleTrack date key, e.g. 4-19")
@@ -104,36 +146,17 @@ def main() -> None:
         default=None,
         help="Directory for generated payload JSON, defaults to ~/.bibletrack/tmp",
     )
+    arg_parser.add_argument(
+        "--db",
+        default=None,
+        help="SQLite database path for ingestion state, defaults to ~/.bibletrack/ingestion.sqlite3",
+    )
     args = arg_parser.parse_args()
 
     day_doc = parse_day(date_key=args.date, translation=args.translation)
-
-    out_dir = Path(args.out_dir) if args.out_dir else Path.home() / ".bibletrack" / "tmp"
-    if not out_dir.is_absolute():
-        out_dir = Path.cwd() / out_dir
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    payloads = [
-        {"tool": "cortex.store", "payload": build_daily_commentary_payload(day_doc)},
-        {"tool": "cortex.store", "payload": build_daily_summary_payload(day_doc)},
-        {"tool": "cortex.store", "payload": build_daily_index_payload(day_doc)},
-        *build_daily_links(day_doc),
-    ]
-    
-    payload_file = out_dir / f"payloads-{args.translation.lower()}-{args.date}.json"
-    payload_file.write_text(json.dumps(payloads, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    ingestion_status = update_ingestion_state(args.date, args.translation, day_doc.content_hash)
-
     print(
         json.dumps(
-            {
-                "date": args.date,
-                "status": "payloads_generated_and_recorded",
-                "ingestion_status": ingestion_status,
-                "payload_file": str(payload_file),
-                "content_hash": day_doc.content_hash
-            },
+            write_day_outputs(day_doc, args.translation, args.date, args.out_dir, args.db),
             indent=2,
             ensure_ascii=False,
         )

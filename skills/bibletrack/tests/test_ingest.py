@@ -2,7 +2,7 @@ import sqlite3
 
 from models import DayDocument, Section, SourceLink
 from extract_entities import build_day_extraction_payload, build_extraction_payloads
-from ingest_into_cortex import build_daily_index_payload, build_daily_links
+from ingest_into_cortex import build_daily_index_payload, build_daily_links, write_day_outputs
 from ingestion_state import get_ingestion_range_status, get_ingestion_status, update_ingestion_state
 
 
@@ -104,3 +104,16 @@ def test_get_ingestion_range_status_returns_compact_count(tmp_path) -> None:
     update_ingestion_state("4-4", "nkjv", "ghi789", db_path=db_path)
 
     assert get_ingestion_range_status("4-1", "4-4", db_path=db_path) == "3/4"
+
+
+def test_write_day_outputs_generates_both_payloads_successively(tmp_path) -> None:
+    day_doc = _day_doc()
+    out_dir = tmp_path / "out"
+    db_path = tmp_path / "ingestion.sqlite3"
+
+    result = write_day_outputs(day_doc, "nkjv", "4-19", out_dir=out_dir, db_path=db_path)
+
+    assert result["status"] == "extraction_and_payloads_generated"
+    assert (out_dir / "entity-extraction-nkjv-4-19.json").exists()
+    assert (out_dir / "payloads-nkjv-4-19.json").exists()
+    assert get_ingestion_status("4-19", db_path=db_path) == "Ingested"

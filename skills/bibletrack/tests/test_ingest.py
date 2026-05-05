@@ -1,6 +1,7 @@
-import json
 import sqlite3
+import json
 
+from cortex_mcp_adapter import CortexMCPAdapter
 from models import DayDocument, Section, SourceLink
 from extract_entities import build_day_extraction_payload, build_extraction_payloads
 from ingest_into_cortex import build_daily_index_payload, build_daily_links, write_day_outputs
@@ -42,6 +43,9 @@ def test_day_extraction_payload_requests_llm_entities() -> None:
     assert payload["payload"]["source_id"] == "bibletrack:4-19:entity-batch"
     assert payload["payload"]["entity_types"] == ["Person", "Place", "Theme", "BibleReference"]
     assert payload["payload"]["preferred_link_mode"] == "batch"
+    assert payload["payload"]["entity_resolution"] == "normalize"
+    assert any("canonical entities" in line for line in payload["payload"]["instructions"])
+    assert any("Do not emit duplicate entities" in line for line in payload["payload"]["instructions"])
     assert any("Prefer batch graph links" in line for line in payload["payload"]["instructions"])
     assert payload["payload"]["sections"][0]["section_id"] == "bibletrack:4-19:lazarus-dies"
     assert "Jesus meets Martha and Mary in Bethany." in payload["payload"]["sections"][0]["text"]
@@ -117,3 +121,25 @@ def test_write_day_outputs_generates_both_payloads_successively(tmp_path) -> Non
     assert (out_dir / "entity-extraction-nkjv-4-19.json").exists()
     assert (out_dir / "payloads-nkjv-4-19.json").exists()
     assert get_ingestion_status("4-19", db_path=tmp_path / "ingestion.sqlite3") == "Missing"
+
+
+def test_cortex_adapter_normalizes_entity_payloads(capsys) -> None:
+    adapter = CortexMCPAdapter()
+    payload = {
+        "content": "Example",
+        "people": [" Peter ", "Peter", "Paul"],
+        "places": [" Jerusalem ", "Jerusalem"],
+        "themes": [" Faith ", "Faith", "Hope"],
+        "bible_references": [" John 11:1-17 ", "John 11:1-17"],
+    }
+
+    adapter.upsert_memory(payload)
+    emitted = json.loads(capsys.readouterr().out)
+
+    assert payload["people"] == ["Peter", "Paul"]
+    assert payload["places"] == ["Jerusalem"]
+    assert payload["themes"] == ["Faith", "Hope"]
+    assert payload["bible_references"] == ["John 11:1-17"]
+    assert payload["metadata"]["entity_resolution"] == "normalize"
+    assert payload["metadata"]["normalization_policy"] == "entity-canonicalization"
+    assert emitted["payload"]["metadata"]["entity_resolution"] == "normalize"

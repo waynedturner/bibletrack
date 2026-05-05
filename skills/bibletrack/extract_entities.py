@@ -11,11 +11,15 @@ def build_day_extraction_payload(day_doc: DayDocument) -> dict:
             "source_id": f"bibletrack:{day_doc.reading_plan_key}:entity-batch",
             "entity_types": ["Person", "Place", "Theme", "BibleReference"],
             "preferred_link_mode": "batch",
+            "entity_resolution": "normalize",
             "instructions": [
                 "Use the requested entity types to decide what should be linked.",
+                "Resolve mentions to normalized canonical entities and collapse aliases or spelling variants.",
+                "Prefer the canonical label already used in the day when the same referent appears multiple times.",
                 "Prefer batch graph links over emitting one-off links for individual mentions.",
                 "Return compact structured JSON grouped by section, with entities and graph links separated.",
                 "Infer links between sections, entities, and Bible references when the text supports them.",
+                "Do not emit duplicate entities for the same referent.",
             ],
             "sections": [
                 {

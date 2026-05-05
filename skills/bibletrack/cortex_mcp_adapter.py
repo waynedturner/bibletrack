@@ -12,6 +12,40 @@ class CortexMCPAdapter:
     keeps the emitted payload shape and generated IDs deterministic.
     """
 
+    _ENTITY_LIST_FIELDS = ("people", "places", "themes", "bible_references")
+
+    def _normalize_entity_list(self, values: Any) -> list[str]:
+        if not isinstance(values, list):
+            raise TypeError("entity-bearing fields must be lists")
+
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for value in values:
+            if not isinstance(value, str):
+                raise TypeError("entity-bearing fields must contain strings")
+            item = value.strip()
+            if not item or item in seen:
+                continue
+            seen.add(item)
+            normalized.append(item)
+        return normalized
+
+    def _normalize_entity_payload(self, payload: dict[str, Any]) -> bool:
+        normalized = False
+        for field in self._ENTITY_LIST_FIELDS:
+            if field in payload:
+                payload[field] = self._normalize_entity_list(payload[field])
+                normalized = True
+
+        if normalized:
+            metadata = payload.setdefault("metadata", {})
+            if not isinstance(metadata, dict):
+                raise TypeError("payload metadata must be a dict when present")
+            metadata.setdefault("entity_resolution", "normalize")
+            metadata.setdefault("normalization_policy", "entity-canonicalization")
+
+        return normalized
+
     def _stable_id(self, prefix: str, payload: dict[str, Any]) -> str:
         # If payload already has an 'id', use it
         if "id" in payload:
@@ -24,6 +58,7 @@ class CortexMCPAdapter:
         return f"{prefix}_{digest}"
 
     def upsert_memory(self, payload: dict[str, Any]) -> str:
+        self._normalize_entity_payload(payload)
         memory_id = self._stable_id("mem", payload)
         # Ensure 'id' is in the payload for the final tool call
         payload["id"] = memory_id

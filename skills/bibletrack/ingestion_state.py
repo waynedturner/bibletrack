@@ -49,6 +49,9 @@ def update_ingestion_state(
             (date, translation_key),
         ).fetchone()
         resolved_status = status or "Ingested"
+        if not status and existing and existing[0] != content_hash:
+            resolved_status = "Re-ingest"
+        
         conn.execute(
             """
             INSERT INTO ingestion_state (date, translation, status, content_hash, updated_at)

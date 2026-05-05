@@ -83,6 +83,7 @@ def build_daily_links(day_doc: DayDocument) -> list[dict]:
                 "source_id": f"bibletrack:{day_doc.reading_plan_key}:daily-summary",
                 "target_id": f"bibletrack:{day_doc.reading_plan_key}:daily-commentary",
                 "relation": "summarizes",
+                "retention_policy": "protected",
             },
         },
         {
@@ -91,6 +92,7 @@ def build_daily_links(day_doc: DayDocument) -> list[dict]:
                 "source_id": f"bibletrack:{day_doc.reading_plan_key}:daily-index",
                 "target_id": f"bibletrack:{day_doc.reading_plan_key}:daily-commentary",
                 "relation": "indexes",
+                "retention_policy": "protected",
             },
         },
     ]

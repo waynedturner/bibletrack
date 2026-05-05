@@ -29,6 +29,7 @@ def build_day_extraction_payload(day_doc: DayDocument) -> dict:
                 "reading_plan_key": day_doc.reading_plan_key,
                 "source_url": day_doc.source_url,
                 "translation": day_doc.translation,
+                "retention_policy": "protected",
             },
         },
     }
@@ -69,6 +70,7 @@ def build_day_resolution_payload(day_doc: DayDocument) -> dict:
                 "reading_plan_key": day_doc.reading_plan_key,
                 "source_url": day_doc.source_url,
                 "translation": day_doc.translation,
+                "retention_policy": "protected",
             },
         },
     }

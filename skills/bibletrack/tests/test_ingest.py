@@ -33,6 +33,7 @@ def test_daily_index_payload_surfaces_refs() -> None:
 
     assert payload["id"] == "bibletrack:4-19:daily-index"
     assert "refs: John 11:1-17" in payload["content"]
+    assert payload["retention_policy"] == "protected"
 
 
 def test_day_extraction_payload_requests_llm_entities() -> None:
@@ -47,6 +48,7 @@ def test_day_extraction_payload_requests_llm_entities() -> None:
     assert any("Do not assign canonical IDs" in line for line in payload["payload"]["instructions"])
     assert payload["payload"]["sections"][0]["section_id"] == "bibletrack:4-19:lazarus-dies"
     assert "Jesus meets Martha and Mary in Bethany." in payload["payload"]["sections"][0]["text"]
+    assert payload["payload"]["context"]["retention_policy"] == "protected"
 
 
 def test_day_resolution_payload_requests_canonical_ids() -> None:
@@ -60,6 +62,7 @@ def test_day_resolution_payload_requests_canonical_ids() -> None:
     assert payload["payload"]["entity_resolution"] == "normalize"
     assert any("Resolve extracted entity mentions" in line for line in payload["payload"]["instructions"])
     assert any("Do not emit duplicate entities" in line for line in payload["payload"]["instructions"])
+    assert payload["payload"]["context"]["retention_policy"] == "protected"
 
 
 def test_extraction_payload_batch_matches_sections() -> None:
@@ -69,6 +72,7 @@ def test_extraction_payload_batch_matches_sections() -> None:
     assert len(payloads) == 1
     assert payloads[0]["payload"]["context"]["reading_plan_key"] == "4-19"
     assert payloads[0]["payload"]["sections"][0]["title"] == "Lazarus Dies"
+    assert payloads[0]["payload"]["context"]["retention_policy"] == "protected"
 
 
 def test_resolution_payload_batch_matches_sections() -> None:
@@ -78,6 +82,7 @@ def test_resolution_payload_batch_matches_sections() -> None:
     assert len(payloads) == 1
     assert payloads[0]["payload"]["context"]["reading_plan_key"] == "4-19"
     assert payloads[0]["payload"]["sections"][0]["title"] == "Lazarus Dies"
+    assert payloads[0]["payload"]["context"]["retention_policy"] == "protected"
 
 
 def test_daily_links_include_summary_and_index() -> None:
@@ -86,6 +91,8 @@ def test_daily_links_include_summary_and_index() -> None:
 
     assert any(link["payload"]["relation"] == "summarizes" for link in links)
     assert any(link["payload"]["relation"] == "indexes" for link in links)
+    for link in links:
+        assert link["payload"]["retention_policy"] == "protected"
 
 
 def test_update_ingestion_state_uses_sqlite(tmp_path) -> None:
@@ -164,3 +171,12 @@ def test_cortex_adapter_normalizes_entity_payloads(capsys) -> None:
     assert payload["metadata"]["entity_resolution"] == "normalize"
     assert payload["metadata"]["normalization_policy"] == "entity-canonicalization"
     assert emitted["payload"]["metadata"]["entity_resolution"] == "normalize"
+    assert emitted["payload"]["retention_policy"] == "protected"
+
+
+def test_cortex_adapter_links_protected(capsys) -> None:
+    adapter = CortexMCPAdapter()
+    adapter.link_memories("A", "B", "rel")
+    emitted = json.loads(capsys.readouterr().out)
+    assert emitted["tool"] == "cortex.link"
+    assert emitted["payload"]["retention_policy"] == "protected"

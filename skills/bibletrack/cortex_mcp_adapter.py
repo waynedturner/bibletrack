@@ -59,6 +59,7 @@ class CortexMCPAdapter:
 
     def upsert_memory(self, payload: dict[str, Any]) -> str:
         self._normalize_entity_payload(payload)
+        payload.setdefault("retention_policy", "protected")
         memory_id = self._stable_id("mem", payload)
         # Ensure 'id' is in the payload for the final tool call
         payload["id"] = memory_id
@@ -70,6 +71,11 @@ class CortexMCPAdapter:
         return memory_id
 
     def link_memories(self, from_id: str, to_id: str, relation: str) -> str:
-        payload = {"source_id": from_id, "target_id": to_id, "relation": relation}
+        payload = {
+            "source_id": from_id,
+            "target_id": to_id,
+            "relation": relation,
+            "retention_policy": "protected",
+        }
         print(json.dumps({"tool": "cortex.link", "payload": payload}, ensure_ascii=False))
         return f"{from_id}->{to_id}"

@@ -41,9 +41,10 @@ python ingestion_state.py status --start 4-1 --end 4-7
 3. Removes verse-body-like quote content while preserving commentary
 4. Preserves Bible references, links, and source URL
 5. Creates deterministic hashes and canonical IDs
-6. Runs entity extraction for that one day first
-7. Runs structural ingest for that same one day second
-8. Writes both payload JSON files into `~/.bibletrack/tmp`
+6. Runs `cortex.extract_entities` for that one day first
+7. Runs `cortex.resolve_entities` for that same one day second so canonical IDs are assigned
+8. Runs structural store/link payloads after resolution
+9. Writes payload JSON files into `~/.bibletrack/tmp`
 
 The strict workflow is one day per invocation. `ingest_into_cortex.py` is the normal entrypoint because it parses the page once and reuses the same day document for both extraction and structural ingest.
 Ingestion state is recorded in `~/.bibletrack/ingestion.sqlite3` only after the actual Cortex tool calls complete successfully, not during payload generation.

@@ -4,7 +4,10 @@ import argparse
 import json
 from pathlib import Path
 
-from extract_entities import build_day_extraction_payload as build_entity_extraction_payload
+from extract_entities import (
+    build_day_extraction_payload,
+    build_day_resolution_payload,
+)
 from models import DayDocument
 from parser import parse_day
 from summarizer import consolidate_day_prose, summarize_day
@@ -115,9 +118,13 @@ def write_day_outputs(
         resolved_out_dir = Path.cwd() / resolved_out_dir
     resolved_out_dir.mkdir(parents=True, exist_ok=True)
 
-    extraction_payload = build_entity_extraction_payload(day_doc)
-    extraction_file = resolved_out_dir / f"entity-extraction-{translation.lower()}-{date}.json"
+    extraction_payload = build_day_extraction_payload(day_doc)
+    extraction_file = resolved_out_dir / f"entity-extract-{translation.lower()}-{date}.json"
     extraction_file.write_text(json.dumps([extraction_payload], indent=2, ensure_ascii=False), encoding="utf-8")
+
+    resolution_payload = build_day_resolution_payload(day_doc)
+    resolution_file = resolved_out_dir / f"entity-resolve-{translation.lower()}-{date}.json"
+    resolution_file.write_text(json.dumps([resolution_payload], indent=2, ensure_ascii=False), encoding="utf-8")
 
     payloads = build_daily_payloads(day_doc)
     payload_file = resolved_out_dir / f"payloads-{translation.lower()}-{date}.json"
@@ -125,8 +132,9 @@ def write_day_outputs(
 
     return {
         "date": date,
-        "status": "extraction_and_payloads_generated",
+        "status": "extraction_resolution_and_payloads_generated",
         "extraction_file": str(extraction_file),
+        "resolution_file": str(resolution_file),
         "payload_file": str(payload_file),
         "content_hash": day_doc.content_hash,
     }

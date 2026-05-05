@@ -3,7 +3,7 @@ import json
 
 from cortex_mcp_adapter import CortexMCPAdapter
 from models import DayDocument, Section, SourceLink
-from extract_entities import build_day_extraction_payload, build_extraction_payloads
+from extract_entities import build_day_extraction_payload, build_day_resolution_payload, build_extraction_payloads, build_resolution_payloads
 from ingest_into_cortex import build_daily_index_payload, build_daily_links, write_day_outputs
 from ingestion_state import get_ingestion_range_status, get_ingestion_status, update_ingestion_state
 
@@ -40,20 +40,40 @@ def test_day_extraction_payload_requests_llm_entities() -> None:
     payload = build_day_extraction_payload(day_doc)
 
     assert payload["tool"] == "cortex.extract_entities"
-    assert payload["payload"]["source_id"] == "bibletrack:4-19:entity-batch"
+    assert payload["payload"]["source_id"] == "bibletrack:4-19:entity-extract"
+    assert payload["payload"]["mode"] == "text_only"
+    assert payload["payload"]["entity_types"] == ["Person", "Place", "Theme", "BibleReference"]
+    assert any("Detect entities from the section text only" in line for line in payload["payload"]["instructions"])
+    assert any("Do not assign canonical IDs" in line for line in payload["payload"]["instructions"])
+    assert payload["payload"]["sections"][0]["section_id"] == "bibletrack:4-19:lazarus-dies"
+    assert "Jesus meets Martha and Mary in Bethany." in payload["payload"]["sections"][0]["text"]
+
+
+def test_day_resolution_payload_requests_canonical_ids() -> None:
+    day_doc = _day_doc()
+    payload = build_day_resolution_payload(day_doc)
+
+    assert payload["tool"] == "cortex.resolve_entities"
+    assert payload["payload"]["source_id"] == "bibletrack:4-19:entity-resolve"
     assert payload["payload"]["entity_types"] == ["Person", "Place", "Theme", "BibleReference"]
     assert payload["payload"]["preferred_link_mode"] == "batch"
     assert payload["payload"]["entity_resolution"] == "normalize"
-    assert any("canonical entities" in line for line in payload["payload"]["instructions"])
+    assert any("Resolve extracted entity mentions" in line for line in payload["payload"]["instructions"])
     assert any("Do not emit duplicate entities" in line for line in payload["payload"]["instructions"])
-    assert any("Prefer batch graph links" in line for line in payload["payload"]["instructions"])
-    assert payload["payload"]["sections"][0]["section_id"] == "bibletrack:4-19:lazarus-dies"
-    assert "Jesus meets Martha and Mary in Bethany." in payload["payload"]["sections"][0]["text"]
 
 
 def test_extraction_payload_batch_matches_sections() -> None:
     day_doc = _day_doc()
     payloads = build_extraction_payloads(day_doc)
+
+    assert len(payloads) == 1
+    assert payloads[0]["payload"]["context"]["reading_plan_key"] == "4-19"
+    assert payloads[0]["payload"]["sections"][0]["title"] == "Lazarus Dies"
+
+
+def test_resolution_payload_batch_matches_sections() -> None:
+    day_doc = _day_doc()
+    payloads = build_resolution_payloads(day_doc)
 
     assert len(payloads) == 1
     assert payloads[0]["payload"]["context"]["reading_plan_key"] == "4-19"
@@ -117,8 +137,9 @@ def test_write_day_outputs_generates_both_payloads_successively(tmp_path) -> Non
 
     result = write_day_outputs(day_doc, "nkjv", "4-19", out_dir=out_dir)
 
-    assert result["status"] == "extraction_and_payloads_generated"
-    assert (out_dir / "entity-extraction-nkjv-4-19.json").exists()
+    assert result["status"] == "extraction_resolution_and_payloads_generated"
+    assert (out_dir / "entity-extract-nkjv-4-19.json").exists()
+    assert (out_dir / "entity-resolve-nkjv-4-19.json").exists()
     assert (out_dir / "payloads-nkjv-4-19.json").exists()
     assert get_ingestion_status("4-19", db_path=tmp_path / "ingestion.sqlite3") == "Missing"
 

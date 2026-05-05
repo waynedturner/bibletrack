@@ -31,11 +31,11 @@ Ingest one BibleTrack daily commentary page at a time into Cortex memory structu
 4. Remove Bible verse-body-like blocks
 5. Preserve commentary prose, Bible references, links, and source URL
 6. Build deterministic section canonical IDs (translation-agnostic) and document hash
-7. Run entity extraction for that single day first so the model can identify `Person`, `Place`, `Theme`, and `BibleReference` from raw commentary text.
-8. Tell the model to use the requested entity types to determine linking, normalize entity mentions to canonical labels/IDs, collapse aliases or spelling variants, and prefer batch graph links over one-off links.
-9. Emit structural memory payloads through `CortexMCPAdapter` for the same day second.
+7. Run `cortex.extract_entities` for that single day first so the model can identify `Person`, `Place`, `Theme`, and `BibleReference` from raw commentary text.
+8. Run `cortex.resolve_entities` for that same day second so the model can map entity mentions to canonical IDs, collapse aliases, and prefer batch graph links over one-off links.
+9. Emit structural memory payloads through `CortexMCPAdapter` after resolution for the same day.
 10. The adapter must normalize entity-bearing payloads by stripping whitespace, removing duplicates, and stamping canonicalization metadata before emitting tool JSON.
-11. Execute the Cortex tool calls required by the generated extraction and structural payloads for that same day.
+11. Execute the Cortex tool calls required by the generated extract, resolve, and structural payloads for that same day.
 12. Record ingestion state in `~/.bibletrack/ingestion.sqlite3` only after those Cortex tool calls complete successfully.
 
 ## Memory objects created per section

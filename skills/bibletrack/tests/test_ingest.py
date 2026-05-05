@@ -1,3 +1,4 @@
+import json
 import sqlite3
 
 from models import DayDocument, Section, SourceLink
@@ -109,11 +110,10 @@ def test_get_ingestion_range_status_returns_compact_count(tmp_path) -> None:
 def test_write_day_outputs_generates_both_payloads_successively(tmp_path) -> None:
     day_doc = _day_doc()
     out_dir = tmp_path / "out"
-    db_path = tmp_path / "ingestion.sqlite3"
 
-    result = write_day_outputs(day_doc, "nkjv", "4-19", out_dir=out_dir, db_path=db_path)
+    result = write_day_outputs(day_doc, "nkjv", "4-19", out_dir=out_dir)
 
     assert result["status"] == "extraction_and_payloads_generated"
     assert (out_dir / "entity-extraction-nkjv-4-19.json").exists()
     assert (out_dir / "payloads-nkjv-4-19.json").exists()
-    assert get_ingestion_status("4-19", db_path=db_path) == "Ingested"
+    assert get_ingestion_status("4-19", db_path=tmp_path / "ingestion.sqlite3") == "Missing"

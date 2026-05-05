@@ -34,8 +34,8 @@ Ingest one BibleTrack daily commentary page at a time into Cortex memory structu
 7. Run entity extraction for that single day first so the model can identify `Person`, `Place`, `Theme`, and `BibleReference` from raw commentary text.
 8. Tell the model to use the requested entity types to determine linking, and prefer batch graph links over one-off links. Resolve extracted entities downstream through Cortex so canonical IDs are model-driven, not hardcoded.
 9. Emit structural memory payloads through `CortexMCPAdapter` for the same day second.
-10. Record ingestion state in `~/.bibletrack/ingestion.sqlite3`.
-11. **The agent MUST read the generated `extraction_file` and `payload_file` and execute the tool calls described within them using the `mcp_cortex_cortex` tools.** This step is critical for persisting the data into memory.
+10. Execute the Cortex tool calls required by the generated extraction and structural payloads for that same day.
+11. Record ingestion state in `~/.bibletrack/ingestion.sqlite3` only after those Cortex tool calls complete successfully.
 
 ## Memory objects created per section
 
@@ -66,4 +66,4 @@ Use `ingestion_state.py status` to query the SQLite state store with minimal out
 
 Use `ingest_into_cortex.py` when you need the strict one-day workflow. It parses the page once and runs entity extraction and structural ingest successively for the same date.
 
-Use `ingestion_state.py update` when you need to record or refresh state without running the full ingest.
+Use `ingestion_state.py update` when the actual Cortex tool calls have completed successfully and you need to record or refresh state.

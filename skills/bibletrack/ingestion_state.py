@@ -117,6 +117,26 @@ def get_ingestion_range_status(start: str, end: str, db_path: str | Path | None 
     return f"{present}/{expected}"
 
 
+def delete_ingestion_state(date: str, translation: str | None = None, db_path: str | Path | None = None) -> str:
+    """Delete ingestion state for a date. If translation is omitted, delete all translations for that date."""
+    path = _resolve_db_path(db_path)
+    if not path.exists():
+        return "Not found"
+
+    with sqlite3.connect(path) as conn:
+        if translation:
+            res = conn.execute(
+                "DELETE FROM ingestion_state WHERE date = ? AND translation = ?",
+                (date, translation.strip().lower()),
+            )
+        else:
+            res = conn.execute("DELETE FROM ingestion_state WHERE date = ?", (date,))
+        conn.commit()
+        deleted = res.rowcount
+
+    return f"Deleted {deleted} record(s)"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Manage BibleTrack ingestion state")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -127,6 +147,11 @@ def main() -> None:
     update_parser.add_argument("--translation", default="nkjv", help="Translation key, defaults to nkjv")
     update_parser.add_argument("--status", default=None, help="Optional explicit status to store")
     update_parser.add_argument("--db", default=None, help="SQLite database path")
+
+    delete_parser = subparsers.add_parser("delete", help="Remove ingestion state")
+    delete_parser.add_argument("--date", required=True, help="BibleTrack date key, e.g. 4-19")
+    delete_parser.add_argument("--translation", default=None, help="Optional translation key")
+    delete_parser.add_argument("--db", default=None, help="SQLite database path")
 
     status_parser = subparsers.add_parser("status", help="Query ingestion state")
     status_group = status_parser.add_mutually_exclusive_group(required=True)
@@ -139,6 +164,10 @@ def main() -> None:
 
     if args.command == "update":
         print(update_ingestion_state(args.date, args.translation, args.content_hash, args.db, args.status))
+        return
+
+    if args.command == "delete":
+        print(delete_ingestion_state(args.date, args.translation, args.db))
         return
 
     if args.start:

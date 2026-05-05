@@ -46,7 +46,7 @@ python ingestion_state.py status --start 4-1 --end 4-7
 8. Writes both payload JSON files into `~/.bibletrack/tmp`
 
 The strict workflow is one day per invocation. `ingest_into_cortex.py` is the normal entrypoint because it parses the page once and reuses the same day document for both extraction and structural ingest.
-Ingestion state is recorded in `~/.bibletrack/ingestion.sqlite3` instead of the markdown log.
+Ingestion state is recorded in `~/.bibletrack/ingestion.sqlite3` only after the actual Cortex tool calls complete successfully, not during payload generation.
 Single dates print one status word; ranges print a compact `present/total` count.
 
 ## Determinism

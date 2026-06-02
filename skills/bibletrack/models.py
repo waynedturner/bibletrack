@@ -30,3 +30,12 @@ class DayDocument(BaseModel):
     links: list[SourceLink]
     sections: list[Section]
     content_hash: str
+
+
+class TopicDocument(BaseModel):
+    id: str
+    title: str
+    content: str
+    source_url: str
+    content_hash: str
+    slug: str
